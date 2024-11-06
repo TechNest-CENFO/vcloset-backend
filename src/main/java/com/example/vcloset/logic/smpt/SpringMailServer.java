@@ -16,8 +16,8 @@ public class SpringMailServer {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("technest.smtp.gmail.com");
-        mailSender.setPassword("TechNest01!");
+        mailSender.setUsername("technest.smtp@gmail.com");
+        mailSender.setPassword("otnkuvdzorzbxvsc");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
