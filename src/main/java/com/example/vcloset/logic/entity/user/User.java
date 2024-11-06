@@ -24,8 +24,9 @@ public class User implements UserDetails {
     private String direction;
     private String dateOfBirth;
     private String picture;
-    private boolean active;
-    private boolean blocked;
+    private boolean isUserActive = true;
+    private boolean isPrivateProfile;
+
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
@@ -240,19 +241,19 @@ public class User implements UserDetails {
         this.picture = picture;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isIsUserActive() {
+        return isUserActive;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setIsUserActive(boolean active) {
+        this.isUserActive = active;
     }
 
-    public boolean isBlocked() {
-        return blocked;
+    public boolean isIsProfileBlocked() {
+        return isPrivateProfile;
     }
 
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
+    public void setIsProfileBlocked(boolean blocked) {
+        this.isPrivateProfile = blocked;
     }
 }
