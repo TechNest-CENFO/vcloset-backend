@@ -1,4 +1,4 @@
-package com.example.vcloset.logic.smpt;
+package com.example.vcloset.logic.service.smpt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

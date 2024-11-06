@@ -2,6 +2,7 @@ package com.example.vcloset.rest.smtp;
 
 import com.example.vcloset.logic.entity.auth.passwordResetEntity.PasswordResetEntity;
 import com.example.vcloset.logic.entity.auth.passwordResetEntity.PasswordResetEntityRepository;
+import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -47,6 +48,6 @@ public class PasswordResetController {
 
         passwordResetEntityRepository.delete(storedPasswordResetEntity);
 
-        return ResponseEntity.ok("Contraseña actualizada exitosamente.");
+        return new GlobalResponseHandler().handleResponse("Password recovery email sent", HttpStatus.OK, request);
     }
 }

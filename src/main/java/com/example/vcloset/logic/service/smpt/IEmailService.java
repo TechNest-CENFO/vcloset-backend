@@ -1,4 +1,4 @@
-package com.example.vcloset.logic.smpt;
+package com.example.vcloset.logic.service.smpt;
 
 import jakarta.mail.MessagingException;
 

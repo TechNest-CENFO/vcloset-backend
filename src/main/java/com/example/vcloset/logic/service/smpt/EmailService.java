@@ -1,6 +1,7 @@
-package com.example.vcloset.logic.smpt;
+package com.example.vcloset.logic.service.smpt;
 
 import com.example.vcloset.logic.entity.auth.JwtService;
+import com.example.vcloset.logic.entity.user.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class EmailService implements IEmailService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
@@ -36,7 +39,7 @@ public class EmailService implements IEmailService {
         String uniqueToken = UUID.randomUUID().toString();
         String htmlBody = String.format("""
         <div style="width: 100%%; display: flex; justify-content: center; align-items: center; background-color: #f3f4f6; padding: 20px;">
-            <div style="width: 400px; background-color: white; padding: 20px; text-align: center;">
+            <div style="width: 500px; background-color: white; padding: 20px; text-align: center;">
                 <div style="margin-bottom: 20px;">
                     <img src="https://res.cloudinary.com/dklipon9i/image/upload/v1730752257/Screenshot_from_2024-10-10_11-07-25-transformed_im7dcc.png" alt="Logo" style="width: 150px;">
                 </div>
@@ -52,8 +55,6 @@ public class EmailService implements IEmailService {
             </div>
         </div>
         """, uniqueToken);
-
-
         jwtService.generatePasswordResetToken(toAddress, uniqueToken);
 
         MimeMessage message = emailSender.createMimeMessage();
