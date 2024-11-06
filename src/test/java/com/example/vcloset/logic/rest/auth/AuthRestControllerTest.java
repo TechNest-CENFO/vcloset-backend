@@ -2,6 +2,8 @@ package com.example.vcloset.logic.rest.auth;
 
 import com.example.vcloset.logic.entity.auth.AuthenticationService;
 import com.example.vcloset.logic.entity.auth.JwtService;
+import com.example.vcloset.logic.entity.rol.RoleEnum;
+import com.example.vcloset.logic.entity.rol.RoleRepository;
 import com.example.vcloset.logic.entity.user.LoginResponse;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
@@ -15,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -33,41 +36,36 @@ public class AuthRestControllerTest {
     private UserRepository userRepository;
 
     @Mock
-    private AuthenticationService authenticationService;
+    private RoleRepository roleRepository;
 
     @Mock
-    private JwtService jwtService;
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     private User user;
-    private LoginResponse loginResponse;
+
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+       MockitoAnnotations.openMocks(this);
         user = new User();
         user.setEmail("super.admin@gmail.com");
         user.setPassword("superadmin123");
 
-        loginResponse = new LoginResponse();
-        loginResponse.setToken("dummy-jwt-token");
-        loginResponse.setExpiresIn(3600);
     }
 
     @Test
-    public void testAuthenticate_Success() {
+    public void testRegisterUser_RoleNotFound() {
         // Arrange
-        when(authenticationService.authenticate(any(User.class))).thenReturn(user);
-        when(jwtService.generateToken(user)).thenReturn("dummy-jwt-token");
-        when(jwtService.getExpirationTime()).thenReturn(3600L);
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());  // No hay usuario con este email
+        when(roleRepository.findByName(RoleEnum.USER)).thenReturn(Optional.empty());  // No se encuentra el role
+        when(passwordEncoder.encode(user.getPassword())).thenReturn("password"); // Mockea la codificación de la contraseña
         // Act
-        ResponseEntity<LoginResponse> response = authRestController.authenticate(user);
+        ResponseEntity<?> response = authRestController.registerUser(user);
 
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
-        assertEquals(user, response.getBody().getAuthUser());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Role not found", response.getBody());
     }
 
 
