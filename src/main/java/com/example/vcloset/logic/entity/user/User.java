@@ -24,6 +24,7 @@ public class User implements UserDetails {
     private String direction;
     private String dateOfBirth;
     private String picture;
+    @Column(columnDefinition = "default=1")
     private boolean isUserActive = true;
     private boolean isPrivateProfile;
 
