@@ -61,9 +61,10 @@ public class User implements UserDetails {
         return List.of(authority);
     }
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();

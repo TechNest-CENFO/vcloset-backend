@@ -20,6 +20,7 @@ public class Clothing {
     @Column(nullable = false)
     private String name;
 
+
     @ManyToMany(mappedBy = "clothing")
     private Set<Category> categories = new LinkedHashSet<>();
 
@@ -48,4 +49,88 @@ public class Clothing {
 
     private String imageUrl;
 
+    public Clothing() {
+        this.isFavorite = false;
+        this.isPublic = true;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ClothingType getClothingType() {
+        return clothingType;
+    }
+
+    public void setClothingType(ClothingType clothingType) {
+        this.clothingType = clothingType;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+    public Set<Outfit> getOutfits() {
+        return outfits;
+    }
+
+    public void setOutfits(Set<Outfit> outfits) {
+        this.outfits = outfits;
+    }
+
+    public Boolean getPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(Boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Set<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(Set<Loan> loans) {
+        this.loans = loans;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
