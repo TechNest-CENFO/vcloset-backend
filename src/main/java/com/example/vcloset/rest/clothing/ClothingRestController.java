@@ -3,11 +3,17 @@ package com.example.vcloset.rest.clothing;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
+import com.example.vcloset.logic.entity.user.User;
+import com.example.vcloset.logic.entity.user.UserRepository;
+import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
+import com.example.vcloset.logic.entity.clothing.clothingType.ClothingTypeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RequestMapping("/clothing")
 @RestController
@@ -17,50 +23,38 @@ public class ClothingRestController {
     private ClothingRepository clothingRepository;
 
     @Autowired
-    private GlobalResponseHandler globalResponseHandler;
+    private UserRepository userRepository; // Repositorio para User
 
     @Autowired
-    private HttpServletRequest request;
+    private ClothingTypeRepository clothingTypeRepository; // Repositorio para ClothingType
 
+    @Autowired
+    private GlobalResponseHandler globalResponseHandler;
 
-    @GetMapping
-    public ResponseEntity<?> getAllClothing(HttpServletRequest request) {
+    @PostMapping
+    public ResponseEntity<?> addClothing(@RequestBody Clothing clothing, HttpServletRequest request) {
         try {
-            Iterable<Clothing> clothingList = clothingRepository.findAll();
+            // Busca el usuario completo con todos sus datos
+            User user = userRepository.findById(clothing.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Asigna el usuario completo a la entidad Clothing
+            clothing.setUser(user);
+
+            Clothing savedClothing = clothingRepository.save(clothing);
             return new GlobalResponseHandler().handleResponse(
-                    "Clothing retrieved successfully",
-                    clothingList,
-                    HttpStatus.OK,
+                    "Clothing created successfully",
+                    savedClothing,
+                    HttpStatus.CREATED,
                     request
             );
         } catch (Exception e) {
             return new GlobalResponseHandler().handleResponse(
-                    "Error retrieving clothing",
+                    "Error creating clothing",
                     e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     request
             );
         }
     }
-
-    @PostMapping
-    public ResponseEntity<?> addClothing(@RequestBody Clothing clothing, HttpServletRequest request) {
-        Clothing savedClothing = clothingRepository.save(clothing);
-        return new GlobalResponseHandler().handleResponse(
-                "Clothing created successfully",
-                savedClothing,
-                HttpStatus.CREATED,
-                request
-        );
-    }
 }
-
-/*
-*     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> addCategoria(@RequestBody Categoria categoria, HttpServletRequest request) {
-        Categoria savedCategoria = categoriaRepository.save(categoria);
-        return new GlobalResponseHandler().handleResponse("Categoria created successfully",
-                savedCategoria, HttpStatus.CREATED, request);
-    }
-* */
