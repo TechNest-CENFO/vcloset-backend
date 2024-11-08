@@ -24,9 +24,11 @@ public class User implements UserDetails {
     private String direction;
     private String dateOfBirth;
     private String picture;
-    @Column(columnDefinition = "default=1")
+
+    @Column(columnDefinition = "TINYINT(1) NOT NULL")
     private boolean isUserActive = true;
-    private boolean isPrivateProfile;
+    @Column(columnDefinition = "TINYINT(1) NOT NULL")
+    private boolean isPrivateProfile = true;
 
 
     @Column(unique = true, length = 100, nullable = false)
