@@ -93,4 +93,44 @@ public class UserRestController {
         return (User) authentication.getPrincipal();
     }
 
+    @PutMapping("/profile/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public Optional<User> updateUserProfile(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setPicture(user.getPicture());
+                    existingUser.setName(user.getName());
+                    existingUser.setLastname(user.getLastname());
+                    existingUser.setEmail(user.getEmail());
+                    existingUser.setDateOfBirth(user.getDateOfBirth());
+                    existingUser.setDirection(user.getDirection());
+
+                    return userRepository.save(existingUser);
+                });
+    }
+
+
+    @PatchMapping("/profile/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public Optional<User> deleteUserAccount(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setIsUserActive(user.isIsUserActive());
+                    return userRepository.save(existingUser);
+                });
+    }
+
+    @PatchMapping("/profile/privacy/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public Optional<User> setProfilePrivacy(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setIsProfileBlocked(user.isIsProfileBlocked());
+                    return userRepository.save(existingUser);
+                });
+    }
+
 }

@@ -13,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
-
+@Table(name = "user")
 @Entity
 public class User implements UserDetails {
     @Id
@@ -21,6 +21,15 @@ public class User implements UserDetails {
     private Long id;
     private String name;
     private String lastname;
+    private String direction;
+    private String dateOfBirth;
+    private String picture;
+
+    @Column(columnDefinition = "TINYINT(1) NOT NULL")
+    private boolean isUserActive = true;
+    @Column(columnDefinition = "TINYINT(1) NOT NULL")
+    private boolean isPrivateProfile = true;
+
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
@@ -54,9 +63,10 @@ public class User implements UserDetails {
         return List.of(authority);
     }
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
@@ -209,5 +219,45 @@ public class User implements UserDetails {
         this.role = role;
 
         return this;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public boolean isIsUserActive() {
+        return isUserActive;
+    }
+
+    public void setIsUserActive(boolean active) {
+        this.isUserActive = active;
+    }
+
+    public boolean isIsProfileBlocked() {
+        return isPrivateProfile;
+    }
+
+    public void setIsProfileBlocked(boolean blocked) {
+        this.isPrivateProfile = blocked;
     }
 }
