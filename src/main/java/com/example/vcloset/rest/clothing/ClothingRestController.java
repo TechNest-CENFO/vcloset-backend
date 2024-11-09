@@ -57,4 +57,24 @@ public class ClothingRestController {
             );
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getClothing(HttpServletRequest request) {
+        try {
+            return new GlobalResponseHandler().handleResponse(
+                    "Clothing retrieved successfully",
+                    clothingRepository.findAll(),
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse(
+                    "Error retrieving clothing",
+                    e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    request
+            );
+        }
+    }
+
 }
