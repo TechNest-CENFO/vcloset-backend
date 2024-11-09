@@ -30,6 +30,8 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/password-recovery").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/password-reset").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement()
