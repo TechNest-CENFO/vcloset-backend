@@ -54,7 +54,26 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         user.setPassword(passwordEncoder.encode(regularUser.getPassword()));
         user.setRole(optionalRole.get());
 
-        userRepository.save(user);
+        User regularUser2 = new User();
+        regularUser2.setName("Joshua");
+        regularUser2.setLastname("Bolanos");
+        regularUser2.setEmail("jbolanosh@ucenfotec.ac.cr");
+        regularUser2.setPassword("regularuser123");
+
+        Optional<User> optionalUser2 = userRepository.findByEmail(regularUser2.getEmail());
+
+        if (optionalRole.isEmpty() || optionalUser2.isPresent()) {
+            return;
+        }
+
+        var user2 = new User();
+        user2.setName(regularUser2.getName());
+        user2.setLastname(regularUser2.getLastname());
+        user2.setEmail(regularUser2.getEmail());
+        user2.setPassword(passwordEncoder.encode(regularUser2.getPassword()));
+        user2.setRole(optionalRole.get());
+
+        userRepository.save(user2);
     }
 
     private void createSuperAdministrator() {

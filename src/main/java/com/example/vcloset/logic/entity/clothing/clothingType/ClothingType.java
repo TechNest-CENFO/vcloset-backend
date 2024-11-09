@@ -13,9 +13,17 @@ public class ClothingType {
     @Column(nullable = false)
     private Long id;
 
+
+
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private ClothingTypeEnum name;
+
+    @Enumerated(EnumType.STRING)
+    private ClothingTypeEnum.SubType subType;
+
+    @Enumerated(EnumType.STRING)
+    private ClothingTypeEnum.SubType.Type type;
 
     @OneToMany(mappedBy = "clothingType", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
@@ -34,6 +42,22 @@ public class ClothingType {
 
     public void setName(ClothingTypeEnum name) {
         this.name = name;
+    }
+
+    public ClothingTypeEnum.SubType getSubType() {
+        return subType;
+    }
+
+    public void setSubType(ClothingTypeEnum.SubType subType) {
+        this.subType = subType;
+    }
+
+    public ClothingTypeEnum.SubType.Type getType() {
+        return type;
+    }
+
+    public void setType(ClothingTypeEnum.SubType.Type type) {
+        this.type = type;
     }
 
     public Set<Clothing> getClothing() {
