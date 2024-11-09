@@ -105,8 +105,6 @@ public class UserRestController {
                     existingUser.setEmail(user.getEmail());
                     existingUser.setDateOfBirth(user.getDateOfBirth());
                     existingUser.setDirection(user.getDirection());
-                    existingUser.setIsProfileBlocked(user.isIsProfileBlocked());
-                    existingUser.setIsUserActive(user.isIsUserActive());
 
                     return userRepository.save(existingUser);
                 });
