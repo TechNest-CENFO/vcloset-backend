@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.loan.Loan;
 import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.recommendation.Recommendation;
 import com.example.vcloset.logic.entity.rol.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -66,7 +67,6 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
