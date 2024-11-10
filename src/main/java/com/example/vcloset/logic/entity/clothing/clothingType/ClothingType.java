@@ -1,6 +1,7 @@
 package com.example.vcloset.logic.entity.clothing.clothingType;
 
 import com.example.vcloset.logic.entity.clothing.Clothing;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -25,6 +26,7 @@ public class ClothingType {
     @Enumerated(EnumType.STRING)
     private ClothingTypeEnum.SubType.Type type;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "clothingType", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
 
