@@ -50,6 +50,10 @@ public class Clothing {
 
     private String imageUrl;
 
+    private String season;
+
+    private String color;
+
     public Clothing() {
         this.isFavorite = false;
         this.isPublic = true;
@@ -133,5 +137,21 @@ public class Clothing {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
