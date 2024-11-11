@@ -151,7 +151,7 @@ public class UserRestController {
 
         return userRepository.findById(userId)
                 .map(existingUser -> {
-                    existingUser.setPassword(user.getPassword());
+                    existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
                     return userRepository.save(existingUser);
                 });
     }
