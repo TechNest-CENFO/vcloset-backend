@@ -133,4 +133,14 @@ public class UserRestController {
                 });
     }
 
+    @PatchMapping("/profile/picture/{userId}")
+    @PreAuthorize("hasAnyRole('REGULAR', 'ADMIN')")
+    public Optional<User> updateProfilePicture(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setPicture(user.getPicture());
+                    return userRepository.save(existingUser);
+                });
+    }
 }
