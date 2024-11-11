@@ -143,4 +143,16 @@ public class UserRestController {
                     return userRepository.save(existingUser);
                 });
     }
+
+
+    @PatchMapping("/profile/password/{userId}")
+    @PreAuthorize("hasAnyRole('REGULAR', 'ADMIN')")
+    public Optional<User> updateUserPassword(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                    return userRepository.save(existingUser);
+                });
+    }
 }

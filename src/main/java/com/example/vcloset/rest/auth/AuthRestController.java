@@ -45,7 +45,23 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody User user) {
+        Optional<User> foundedUser = userRepository.findByEmail(user.getEmail());
+
+        if (foundedUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        User userFromDb = foundedUser.get();
+
+        if (!userFromDb.isIsUserActive()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
         User authenticatedUser = authenticationService.authenticate(user);
+
+        if (authenticatedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
@@ -53,10 +69,7 @@ public class AuthRestController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        Optional<User> foundedUser = userRepository.findByEmail(user.getEmail());
-
-        foundedUser.ifPresent(loginResponse::setAuthUser);
-
+        loginResponse.setAuthUser(authenticatedUser);
         return ResponseEntity.ok(loginResponse);
     }
 
