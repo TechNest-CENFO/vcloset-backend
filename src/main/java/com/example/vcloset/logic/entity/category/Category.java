@@ -2,6 +2,7 @@ package com.example.vcloset.logic.entity.category;
 
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.outfit.Outfit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -18,6 +19,7 @@ public class Category {
     @Enumerated(EnumType.STRING)
     private CategoryEnum name;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "Category_clothing",
             joinColumns = @JoinColumn(name = "category_id"),
