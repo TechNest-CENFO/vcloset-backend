@@ -71,59 +71,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private Set<Outfit> outfits = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private Set<com.example.vcloset.logic.entity.collection.Collection> collections = new LinkedHashSet<>();
-
-    public Set<com.example.vcloset.logic.entity.collection.Collection> getCollections() {
-        return collections;
-    }
-
-    public void setCollections(Set<com.example.vcloset.logic.entity.collection.Collection> collections) {
-        this.collections = collections;
-    }
-
-    public Set<Outfit> getOutfits() {
-        return outfits;
-    }
-
-    public void setOutfits(Set<Outfit> outfits) {
-        this.outfits = outfits;
-    }
-
-    public Set<Clothing> getClothing() {
-        return clothing;
-    }
-
-    public void setClothing(Set<Clothing> clothing) {
-        this.clothing = clothing;
-    }
-
-    public Set<Loan> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(Set<Loan> loans) {
-        this.loans = loans;
-    }
-
-    public Set<Loan> getLends() {
-        return lends;
-    }
-
-    public void setLends(Set<Loan> lends) {
-        this.lends = lends;
-    }
-
-    public Set<Recommendation> getRecommendations() {
-        return recommendations;
-    }
-
-    public void setRecommendations(Set<Recommendation> recommendations) {
-        this.recommendations = recommendations;
-    }
 
     // Constructors
     public User() {}
