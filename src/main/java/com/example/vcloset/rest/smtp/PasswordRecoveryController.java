@@ -23,10 +23,10 @@ public class PasswordRecoveryController {
 
     @PostMapping
     public ResponseEntity<?> sentRecoveryEmail(@RequestBody ToAddress toAddress, HttpServletRequest request) throws MessagingException {
-        emailService.sendHtmlMessage(toAddress.getToAddress(),"Virtual Closet | Password Recovery");
         if(!userService.validateExistingEmail(toAddress.getToAddress())){
             return new GlobalResponseHandler().handleResponse("User not found", HttpStatus.UNAUTHORIZED, request);
         }
+        emailService.sendHtmlMessage(toAddress.getToAddress(),"Virtual Closet | Password Recovery");
         return new GlobalResponseHandler().handleResponse("Password recovery email sent", HttpStatus.OK, request);
     }
 }
