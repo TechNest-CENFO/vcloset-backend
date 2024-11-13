@@ -1,10 +1,8 @@
 package com.example.vcloset.logic.rest.auth;
 
-import com.example.vcloset.logic.entity.auth.AuthenticationService;
-import com.example.vcloset.logic.entity.auth.JwtService;
+
 import com.example.vcloset.logic.entity.rol.RoleEnum;
 import com.example.vcloset.logic.entity.rol.RoleRepository;
-import com.example.vcloset.logic.entity.user.LoginResponse;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
 import com.example.vcloset.rest.auth.AuthRestController;
@@ -22,8 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
