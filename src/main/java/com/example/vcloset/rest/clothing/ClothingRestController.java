@@ -91,15 +91,15 @@ public class ClothingRestController {
 
 
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Clothing> ordersPage = clothingRepository.findByUserId(userId, pageable);
+            Page<Clothing> clothingPage = clothingRepository.findByUserId(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-            meta.setTotalPages(ordersPage.getTotalPages());
-            meta.setTotalElements(ordersPage.getTotalElements());
-            meta.setPageNumber(ordersPage.getNumber() + 1);
-            meta.setPageSize(ordersPage.getSize());
+            meta.setTotalPages(clothingPage.getTotalPages());
+            meta.setTotalElements(clothingPage.getTotalElements());
+            meta.setPageNumber(clothingPage.getNumber() + 1);
+            meta.setPageSize(clothingPage.getSize());
 
             return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
-                    ordersPage.getContent(), HttpStatus.OK, meta);
+                    clothingPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
@@ -117,15 +117,15 @@ public class ClothingRestController {
 
 
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Clothing> ordersPage = clothingRepository.findByUserIdAndIsFavoriteTrue(userId, pageable);
+            Page<Clothing> clothingPage = clothingRepository.findByUserIdAndIsFavoriteTrue(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-            meta.setTotalPages(ordersPage.getTotalPages());
-            meta.setTotalElements(ordersPage.getTotalElements());
-            meta.setPageNumber(ordersPage.getNumber() + 1);
-            meta.setPageSize(ordersPage.getSize());
+            meta.setTotalPages(clothingPage.getTotalPages());
+            meta.setTotalElements(clothingPage.getTotalElements());
+            meta.setPageNumber(clothingPage.getNumber() + 1);
+            meta.setPageSize(clothingPage.getSize());
 
             return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
-                    ordersPage.getContent(), HttpStatus.OK, meta);
+                    clothingPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
@@ -146,15 +146,15 @@ public class ClothingRestController {
 
             List<Clothing> allClothingItems = clothingRepository.getClothingByUserAndType(userId, type);
 
-            Page<Clothing> ordersPage = new PageImpl<>(allClothingItems, pageable, allClothingItems.size());
+            Page<Clothing> clothingPage = new PageImpl<>(allClothingItems, pageable, allClothingItems.size());
 
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-            meta.setTotalPages(ordersPage.getTotalPages());
-            meta.setTotalElements(ordersPage.getTotalElements());
-            meta.setPageNumber(ordersPage.getNumber() + 1);
-            meta.setPageSize(ordersPage.getSize());
+            meta.setTotalPages(clothingPage.getTotalPages());
+            meta.setTotalElements(clothingPage.getTotalElements());
+            meta.setPageNumber(clothingPage.getNumber() + 1);
+            meta.setPageSize(clothingPage.getSize());
             return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
-                    ordersPage.getContent(), HttpStatus.OK, meta);
+                    clothingPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
