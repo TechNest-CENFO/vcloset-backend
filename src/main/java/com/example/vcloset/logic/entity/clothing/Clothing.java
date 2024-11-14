@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
 import com.example.vcloset.logic.entity.loan.Loan;
 import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -19,7 +20,6 @@ public class Clothing {
 
     @Column(nullable = false)
     private String name;
-
 
     @ManyToMany(mappedBy = "clothing")
     private Set<Category> categories = new LinkedHashSet<>();
@@ -43,11 +43,16 @@ public class Clothing {
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     private String imageUrl;
+
+    private String season;
+
+    private String color;
 
     public Clothing() {
         this.isFavorite = false;
@@ -98,16 +103,16 @@ public class Clothing {
         return isPublic;
     }
 
-    public void setPublic(Boolean aPublic) {
-        isPublic = aPublic;
+    public void setPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
-    public Boolean getFavorite() {
+    public Boolean getIsFavorite() {
         return isFavorite;
     }
 
-    public void setFavorite(Boolean favorite) {
-        isFavorite = favorite;
+    public void setIsFavorite(Boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 
     public Set<Loan> getLoans() {
@@ -132,5 +137,21 @@ public class Clothing {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

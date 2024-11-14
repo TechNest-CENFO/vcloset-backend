@@ -7,6 +7,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -53,6 +55,8 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         user.setEmail(regularUser.getEmail());
         user.setPassword(passwordEncoder.encode(regularUser.getPassword()));
         user.setRole(optionalRole.get());
+
+        userRepository.save(user);
 
         User regularUser2 = new User();
         regularUser2.setName("Joshua");

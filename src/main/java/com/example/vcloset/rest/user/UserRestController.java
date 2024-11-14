@@ -94,7 +94,7 @@ public class UserRestController {
     }
 
     @PutMapping("/profile/{userId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Optional<User> updateUserProfile(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
 
         return userRepository.findById(userId)
@@ -112,7 +112,7 @@ public class UserRestController {
 
 
     @PatchMapping("/profile/{userId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Optional<User> deleteUserAccount(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
 
         return userRepository.findById(userId)
@@ -123,7 +123,7 @@ public class UserRestController {
     }
 
     @PatchMapping("/profile/privacy/{userId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Optional<User> setProfilePrivacy(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
 
         return userRepository.findById(userId)
@@ -133,4 +133,26 @@ public class UserRestController {
                 });
     }
 
+    @PatchMapping("/profile/picture/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<User> updateProfilePicture(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setPicture(user.getPicture());
+                    return userRepository.save(existingUser);
+                });
+    }
+
+
+    @PatchMapping("/profile/password/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<User> updateUserPassword(@PathVariable Long userId, @RequestBody User user, HttpServletRequest request) {
+
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                    return userRepository.save(existingUser);
+                });
+    }
 }
