@@ -1,8 +1,7 @@
 package com.example.vcloset.logic.rest.user;
 
-import static javax.management.Query.eq;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
@@ -50,7 +49,7 @@ public class UserRestControllerTest {
 
     private Page<User> userPage;
     private User user;
-    private Long userId = 1L;
+
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -63,7 +62,6 @@ public class UserRestControllerTest {
         user = new User();
         user.setEmail("regular.user@gmail.com");
         user.setPassword("regularuser123");
-        userId = 1L;
         userPage = new PageImpl<>(userList);
         MockitoAnnotations.openMocks(this);
     }

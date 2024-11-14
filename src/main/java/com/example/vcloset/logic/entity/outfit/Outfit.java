@@ -4,6 +4,7 @@ import com.example.vcloset.logic.entity.category.Category;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.collection.Collection;
 import com.example.vcloset.logic.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -39,6 +40,7 @@ public class Outfit {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "Outfit_collections",
             joinColumns = @JoinColumn(name = "outfit_"),
@@ -48,4 +50,90 @@ public class Outfit {
     @Column(nullable = false)
     private String imageUrl;
 
+    public Outfit() {
+    }
+
+    public Outfit(Integer id, String name, Set<Clothing> clothing, Boolean isPublic, Boolean isFavorite, Category category, User user, Set<Collection> collections, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.clothing = clothing;
+        this.isPublic = isPublic;
+        this.isFavorite = isFavorite;
+        this.category = category;
+        this.user = user;
+        this.collections = collections;
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<Clothing> getClothing() {
+        return clothing;
+    }
+
+    public void setClothing(Set<Clothing> clothing) {
+        this.clothing = clothing;
+    }
+
+    public Boolean getPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(Boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Set<Collection> getCollections() {
+        return collections;
+    }
+
+    public void setCollections(Set<Collection> collections) {
+        this.collections = collections;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
