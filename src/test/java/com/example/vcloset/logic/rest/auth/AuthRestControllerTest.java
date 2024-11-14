@@ -1,8 +1,10 @@
 package com.example.vcloset.logic.rest.auth;
 
 
+import com.example.vcloset.logic.entity.auth.AuthenticationService;
 import com.example.vcloset.logic.entity.rol.RoleEnum;
 import com.example.vcloset.logic.entity.rol.RoleRepository;
+import com.example.vcloset.logic.entity.user.LoginResponse;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
 import com.example.vcloset.rest.auth.AuthRestController;
@@ -20,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -37,6 +41,8 @@ public class AuthRestControllerTest {
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Mock
+    private AuthenticationService authenticationService;
 
     private User user;
 
@@ -51,7 +57,7 @@ public class AuthRestControllerTest {
     }
 
     @Test
-    public void testRegisterUser_RoleNotFound() {
+    public void testRegisterUserSignUp_RoleNotFound() {
         // Arrange
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());  // No hay usuario con este email
         when(roleRepository.findByName(RoleEnum.USER)).thenReturn(Optional.empty());  // No se encuentra el role
@@ -64,5 +70,14 @@ public class AuthRestControllerTest {
         assertEquals("Role not found", response.getBody());
     }
 
+    @Test
+    public void testAuthenticate_InvalidCredentials() {
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+
+        ResponseEntity<LoginResponse> response = authRestController.authenticate(user);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
+    }
 
 }
