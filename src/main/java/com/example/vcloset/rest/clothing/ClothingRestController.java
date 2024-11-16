@@ -162,4 +162,17 @@ public class ClothingRestController {
     }
 
 
+
+
+    @PatchMapping("/delete/{clothing_id}")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<Clothing> deleteClothingItem(@PathVariable  Long clothing_id ,@RequestBody Clothing clothing, HttpServletRequest request) {
+
+        return clothingRepository.findById(clothing_id)
+                .map(existingClothingItem -> {
+                    existingClothingItem.setClothingItemActive(false);
+                    return clothingRepository.save(existingClothingItem);
+                });
+    }
+
 }
