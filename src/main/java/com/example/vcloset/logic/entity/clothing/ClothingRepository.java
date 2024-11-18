@@ -12,6 +12,8 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
 
     Page<Clothing> findByUserId(Long userId, Pageable pageable);
 
+    List<Clothing> findByUserId(Long userId);
+
     Page<Clothing> findByUserIdAndIsFavoriteTrue(Long userId, Pageable pageable);
 
     @Procedure(name = "GetClothingByUserAndType")

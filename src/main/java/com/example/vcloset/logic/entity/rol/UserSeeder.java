@@ -39,8 +39,8 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         User regularUser = new User();
         regularUser.setName("Regular");
         regularUser.setLastname("User");
-        regularUser.setEmail("regular.user@gmail.com");
-        regularUser.setPassword("regularuser123");
+        regularUser.setEmail("johan.araya6@gmail.com");
+        regularUser.setPassword("b");
 
         Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.USER);
         Optional<User> optionalUser = userRepository.findByEmail(regularUser.getEmail());
@@ -84,8 +84,8 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         User superAdmin = new User();
         superAdmin.setName("Super");
         superAdmin.setLastname("Admin");
-        superAdmin.setEmail("super.admin@gmail.com");
-        superAdmin.setPassword("superadmin123");
+        superAdmin.setEmail("a");
+        superAdmin.setPassword("a");
 
         Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.ADMIN);
         Optional<User> optionalUser = userRepository.findByEmail(superAdmin.getEmail());
