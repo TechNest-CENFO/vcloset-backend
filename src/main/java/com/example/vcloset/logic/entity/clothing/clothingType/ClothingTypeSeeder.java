@@ -23,151 +23,151 @@ public class ClothingTypeSeeder implements ApplicationListener<ContextRefreshedE
 
     private void loadClothingTypes() {
         ClothingTypeEnum[] clothingTypeNames = new ClothingTypeEnum[] {
-                ClothingTypeEnum.T_SHIRT_SHORT_SLEEVE,
-                ClothingTypeEnum.T_SHIRT_LONG_SLEEVE,
-                ClothingTypeEnum.T_SHIRT_SLEEVELESS,
+                ClothingTypeEnum.CAMISETA_MANGA_CORTA,
+                ClothingTypeEnum.CAMISETA_MANGA_LARGA,
+                ClothingTypeEnum.CAMISETA_SIN_MANGAS,
 
-                ClothingTypeEnum.SHIRT_CASUAL,
-                ClothingTypeEnum.SHIRT_FORMAL,
-                ClothingTypeEnum.SHIRT_BUTTON_DOWN,
-                ClothingTypeEnum.SHIRT_POLO,
+                ClothingTypeEnum.CAMISA_CASUAL,
+                ClothingTypeEnum.CAMISA_FORMAL,
+                ClothingTypeEnum.CAMISA_CON_BOTONES_ABAJO,
+                ClothingTypeEnum.CAMISA_POLO,
 
-                ClothingTypeEnum.BLOUSE_CASUAL,
-                ClothingTypeEnum.BLOUSE_ELEGANT,
-                ClothingTypeEnum.BLOUSE_SHORT_SLEEVE,
-                ClothingTypeEnum.BLOUSE_LONG_SLEEVE,
+                ClothingTypeEnum.BLUSA_CASUAL,
+                ClothingTypeEnum.BLUSA_ELEGANTE,
+                ClothingTypeEnum.BLUSA_DE_MANGA_CORTA,
+                ClothingTypeEnum.BLUSA_MANGA_LARGA,
 
-                ClothingTypeEnum.SWEATSHIRT_WITH_HOOD,
-                ClothingTypeEnum.SWEATSHIRT_WITHOUT_HOOD,
-                ClothingTypeEnum.SWEATSHIRT_ZIP_UP,
+                ClothingTypeEnum.SUDADERA_CON_CAPUCHA,
+                ClothingTypeEnum.SUDADERA_SIN_CAPUCHA,
+                ClothingTypeEnum.SUDADERA_CON_CREMALLERA,
 
-                ClothingTypeEnum.TOP_CROP_TOP,
+                ClothingTypeEnum.TOP_CROP,
                 ClothingTypeEnum.TOP_BRALETTE,
-                ClothingTypeEnum.TOP_TANK_TOP,
+                ClothingTypeEnum.TOP_TANK,
 
-                ClothingTypeEnum.UPPER_OTHERS_OTHER,
+                ClothingTypeEnum.OTROS_TOPS,
 
                 ////////////////////
                 //PANTS
-                ClothingTypeEnum.PANTS_JEAN,
-                ClothingTypeEnum.PANTS_DRESS,
-                ClothingTypeEnum.PANTS_SWEETPANTS,
-                ClothingTypeEnum.PANTS_CARGO,
+                ClothingTypeEnum.PANTALONES_DE_MEZCLILLA,
+                ClothingTypeEnum.PANTALONES_DE_TRAJE,
+                ClothingTypeEnum.PANTALONES_SWEETPANTS,
+                ClothingTypeEnum.PANTALONES_CARGO,
 
-                ClothingTypeEnum.SKIRT_PENCIL,
-                ClothingTypeEnum.SKIRT_LONG,
-                ClothingTypeEnum.SKIRT_MIDI,
-                ClothingTypeEnum.SKIRT_MINI,
-                ClothingTypeEnum.SKIRT_PLEATED,
+                ClothingTypeEnum.FALDA,
+                ClothingTypeEnum.FALDA_LARGA,
+                ClothingTypeEnum.FALDA_MEDIA,
+                ClothingTypeEnum.FALDA_MINI,
+                ClothingTypeEnum.FALDA_PLISADA,
 
-                ClothingTypeEnum.LEGGINGS_ATHLETIC,
+                ClothingTypeEnum.LEGGINGS_ATLETICOS,
                 ClothingTypeEnum.LEGGINGS_CASUAL,
-                ClothingTypeEnum.LEGGINGS_FAUX_LEATHER,
+                ClothingTypeEnum.LEGGINGS_DE_CUERO_SINTÉTICO,
 
-                ClothingTypeEnum.SHORTS_CASUAL,
-                ClothingTypeEnum.SHORTS_ATHLETIC,
-                ClothingTypeEnum.SHORTS_DENIM,
+                ClothingTypeEnum.PANTALONES_CORTOS_CASUALES,
+                ClothingTypeEnum.PANTALONES_CORTOS_ATLETICOS,
+                ClothingTypeEnum.PANTALONES_CORTOS_DE_MEZCLILLA,
                 ClothingTypeEnum.SHORTS_BERMUDA,
 
-                ClothingTypeEnum.SWIMWEAR_ATHLETIC_SWIM_SHORTS,
-                ClothingTypeEnum.SWIMWEAR_CASUAL_SWIM_SHORTS,
+                ClothingTypeEnum.BAÑADOR_ATLETICO_PANTALONES_CORTOS,
+                ClothingTypeEnum.BAÑADOR_CASUAL_PANTALONES_CORTOS,
 
-                ClothingTypeEnum.OTHERS_CULOTTES,
-                ClothingTypeEnum.OTHERS_HIGH_WAISTED_PANTS,
-                ClothingTypeEnum.OTHERS_FLARED_PANTS,
-                ClothingTypeEnum.OTHERS_LINEN_PANTS,
-                ClothingTypeEnum.PANTS_OTHERS_OTHER,
+                ClothingTypeEnum.OTROS,
+                ClothingTypeEnum.OTROS_PANTALONES_DE_CINTURA_ALTA,
+                ClothingTypeEnum.OTROS_PANTALONES_ACAMPANADOS,
+                ClothingTypeEnum.OTROS_PANTALONES_DE_LINO,
+                ClothingTypeEnum.PANTALONES_OTROS_OTROS,
 
                 /////////////////
                 //OUTWEAR
-                ClothingTypeEnum.COAT_LONG,
-                ClothingTypeEnum.COAT_TRENCH,
-                ClothingTypeEnum.COAT_WOOL,
-                ClothingTypeEnum.COAT_PUFFER,
+                ClothingTypeEnum.ABRIGO_LARGO,
+                ClothingTypeEnum.ABRIGO_TRENCH,
+                ClothingTypeEnum.ABRIGO_DE_LANA,
+                ClothingTypeEnum.ABRIGO_PUFFER,
 
-                ClothingTypeEnum.JACKET_LEATHER,
-                ClothingTypeEnum.JACKET_DENIM,
-                ClothingTypeEnum.JACKET_BOMBER,
-                ClothingTypeEnum.JACKET_KNIT,
+                ClothingTypeEnum.CHAQUETA_DE_CUERO,
+                ClothingTypeEnum.CHAQUETA_DE_MEZCLILLA,
+                ClothingTypeEnum.CHAQUETA_DE_PUNTO,
+                ClothingTypeEnum.CHAQUETA_DE_PUNTO,
 
-                ClothingTypeEnum.WINDBREAKER_WINDBREAKER,
+                ClothingTypeEnum.ROMPEVIENTO_ROMPEVIENTO,
 
-                ClothingTypeEnum.PARKA_LINED,
-                ClothingTypeEnum.PARKA_WATERPROOF,
+                ClothingTypeEnum.PARKA_FORRADA,
+                ClothingTypeEnum.PARKA_IMPERMEABLE,
 
-                ClothingTypeEnum.HOODIE_COTTON,
-                ClothingTypeEnum.HOODIE_STREET_STYLE,
+                ClothingTypeEnum.SUDADERA_DE_ALGODÓN,
+                ClothingTypeEnum.SUDADERA_ESTILO_CALLE,
 
-                ClothingTypeEnum.OTHERS_PONCHO,
-                ClothingTypeEnum.OTHERS_CARDIGAN,
-                ClothingTypeEnum.OTHERS_RAINCOAT,
-                ClothingTypeEnum.OUTWEAR_OTHERS_OTHER,
+                ClothingTypeEnum.OTROS_PONCHO,
+                ClothingTypeEnum.OTROS_CÁRDIGAN,
+                ClothingTypeEnum.OTROS_IMPERMEABLE,
+                ClothingTypeEnum.ABRIGOS_OTROS,
 
                 ////////////////
                 //FOOTWEAR
-                ClothingTypeEnum.SNEAKERS_ATHLETIC,
-                ClothingTypeEnum.SNEAKERS_CASUAL,
-                ClothingTypeEnum.SNEAKERS_HIGH_TOP,
+                ClothingTypeEnum.ZAPATILLAS_ATLETICAS,
+                ClothingTypeEnum.ZAPATILLAS_CASUALES,
+                ClothingTypeEnum.ZAPATILLAS_DE_ALTA_CANA,
 
-                ClothingTypeEnum.BOOTS_ANKLE,
-                ClothingTypeEnum.BOOTS_KNEE_HIGH,
-                ClothingTypeEnum.BOOTS_COMBAT,
-                ClothingTypeEnum.BOOTS_CHELSEA,
+                ClothingTypeEnum.BOTAS_DE_TOBILLO,
+                ClothingTypeEnum.BOTAS_HASTA_LA_RODILLA,
+                ClothingTypeEnum.BOTAS_COMBAT,
+                ClothingTypeEnum.BOTAS_CHELSEA,
 
-                ClothingTypeEnum.DRESS_SHOES_OXFORDS,
-                ClothingTypeEnum.DRESS_SHOES_LOAFERS,
-                ClothingTypeEnum.DRESS_SHOES_DERBY,
-                ClothingTypeEnum.DRESS_SHOES_MONK_STRAP_SHOES,
+                ClothingTypeEnum.ZAPATOS_DE_TRAJE_OXFORD,
+                ClothingTypeEnum.ZAPATOS_DE_TRAJE_LOAFERS,
+                ClothingTypeEnum.ZAPATOS_DE_TRAJE_DERBY,
+                ClothingTypeEnum.ZAPATOS_DE_TRAJE_MONK_STRAP,
 
-                ClothingTypeEnum.SANDALS_FLIP_FLOPS,
-                ClothingTypeEnum.SANDALS_SLIDE,
-                ClothingTypeEnum.SANDALS_STRAPPY,
-                ClothingTypeEnum.SANDALS_GLADIATOR,
+                ClothingTypeEnum.SANDALIAS_DE_PLAYA,
+                ClothingTypeEnum.SANDALIAS_SLIDE,
+                ClothingTypeEnum.SANDALIAS_CON_TIRAS,
+                ClothingTypeEnum.SANDALIAS_GLADIADOR,
 
-                ClothingTypeEnum.HEELS_STILETTO,
-                ClothingTypeEnum.HEELS_BLOCK,
-                ClothingTypeEnum.HEELS_WEDGE,
-                ClothingTypeEnum.HEELS_KITTEN,
+                ClothingTypeEnum.TACONES_STILETTO,
+                ClothingTypeEnum.TACONES_BLOQUE,
+                ClothingTypeEnum.TACONES_DE_CUNA,
+                ClothingTypeEnum.TACONES_KITTEN,
 
-                ClothingTypeEnum.FLATS_LOAFERS,
-                ClothingTypeEnum.FLATS_SLIP_ON_FLATS,
+                ClothingTypeEnum.MOCASINES,
+                ClothingTypeEnum.ZAPATOS_PLANOS_SLIP_ON,
 
-                ClothingTypeEnum.SLIPPERS_HOUSE_SLIPPERS,
-                ClothingTypeEnum.SLIPPERS_MOCCASINS,
+                ClothingTypeEnum.ZAPATOS_DE_CASA,
+                ClothingTypeEnum.MOCASINES,
 
-                ClothingTypeEnum.OTHERS_RAIN_BOOTS,
-                ClothingTypeEnum.OTHERS_HIKING_BOOTS,
-                ClothingTypeEnum.FOOTWEAR_OTHERS_OTHER,
+                ClothingTypeEnum.OTROS_BOTAS_DE_LLUVIA,
+                ClothingTypeEnum.OTROS_BOTAS_DE_MONTAÑA,
+                ClothingTypeEnum.CALZADO_OTRO_OTRO,
 
                 /////////////
                 //FULL BODY
-                ClothingTypeEnum.DRESS_COCKTAIL_DRESS,
-                ClothingTypeEnum.DRESS_CASUAL_DRESS,
-                ClothingTypeEnum.DRESS_EVENING_GOWN,
-                ClothingTypeEnum.DRESS_MAXI_DRESS,
-                ClothingTypeEnum.DRESS_MIDI_DRESS,
-                ClothingTypeEnum.DRESS_MINI_DRESS,
-                ClothingTypeEnum.DRESS_WRAP_DRESS,
-                ClothingTypeEnum.DRESS_SHIRT_DRESS,
+                ClothingTypeEnum.VESTIDO_DE_COCTEL,
+                ClothingTypeEnum.VESTIDO_CASUAL,
+                ClothingTypeEnum.VESTIDO_DE_NOCHE,
+                ClothingTypeEnum.VESTIDO_MAXI,
+                ClothingTypeEnum.VESTIDO_MIDI,
+                ClothingTypeEnum.VESTIDO_MINI,
+                ClothingTypeEnum.VESTIDO_CRUZADO,
+                ClothingTypeEnum.VESTIDO_CAMISA,
 
-                ClothingTypeEnum.OVERALL_DENIM_OVERALL,
-                ClothingTypeEnum.OVERALL_SHORT_OVERALL,
-                ClothingTypeEnum.OVERALL_UTILITY_OVERALL,
+                ClothingTypeEnum.OVEROL_DE_MEZCLILLA,
+                ClothingTypeEnum.OVEROL_CORTO,
+                ClothingTypeEnum.OVEROL_DE_UTILIDAD,
 
-                ClothingTypeEnum.FULL_BODY_OTHERS_OTHER,
+                ClothingTypeEnum.CUERPO_COMPLETO_OTRO_OTRO,
 
                 ///////////
                 //ACCESSORY
-                ClothingTypeEnum.HEAD_WEAR_HAT,
-                ClothingTypeEnum.HEAD_WEAR_CAP,
-                ClothingTypeEnum.HEAD_WEAR_BEANIE,
-                ClothingTypeEnum.HEAD_WEAR_BERET,
-                ClothingTypeEnum.HEAD_WEAR_SUN_HAT,
+                ClothingTypeEnum.SOMBRERO,
+                ClothingTypeEnum.GORRA,
+                ClothingTypeEnum.GORRO,
+                ClothingTypeEnum.BOINA,
+                ClothingTypeEnum.SOMBRERO_DE_SOL,
 
-                ClothingTypeEnum.SCARVES_WINTER_SCARF,
-                ClothingTypeEnum.SCARVES_CASUAL_SCARF,
+                ClothingTypeEnum.BUFANDA_DE_INVIERNO,
+                ClothingTypeEnum.BUFANDA_CASUAL,
 
-                ClothingTypeEnum.ACCESSORY_OTHERS_OTHER
+                ClothingTypeEnum.ACCESORIOS_OTROS_OTROS
         };
 
         Arrays.stream(clothingTypeNames).forEach((clothingTypeName) -> {
