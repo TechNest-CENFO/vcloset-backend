@@ -47,12 +47,11 @@ public class OutfitRestController {
 
     @Autowired
     private GlobalResponseHandler globalResponseHandler;
-
     @Autowired
     private ClothingRepository clothingRepository;
 
-    private Map<String, String> outfit = new HashMap<>();
-    private int numberPicture = 0;
+    private List<String> outfit = new ArrayList<>();
+
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "1") int page,
@@ -173,8 +172,8 @@ public class OutfitRestController {
     }
 
     private void getTypeList(List<Map<String, Object>> temporal) {
-        numberPicture = 0;
-        outfit = new HashMap<>();
+
+        outfit = new ArrayList<>();
         // Crear un mapa para agrupar las listas por tipo
         Map<String, List<Map<String, String>>> categories = new HashMap<>();
         categories.put(SUPERIOR, new ArrayList<>());
@@ -212,7 +211,7 @@ public class OutfitRestController {
             }
         } else {
             // Si 'SUPERIOR' no tiene elementos selecciona de cuerpo completo
-            if (!categories.get(SUPERIOR).isEmpty()) {
+            if(!categories.get(SUPERIOR).isEmpty()){
                 selectRandomFromList(categories.get(SUPERIOR));
                 // Lista de categorías a verificar
                 List<String> categoriesToCheck = List.of(
@@ -227,7 +226,7 @@ public class OutfitRestController {
                 }
 
 
-            } else if (!categories.get(CUERPO_COMPLETO).isEmpty()) {
+            }else if (!categories.get(CUERPO_COMPLETO).isEmpty()){
                 selectRandomFromList(categories.get(CUERPO_COMPLETO));
                 selectRandomFromList(categories.get(SUPERIOR));
                 selectRandomFromList(categories.get(CALZADO));
@@ -241,23 +240,23 @@ public class OutfitRestController {
     private void selectRandomFromList(List<Map<String, String>> list) {
         Map<String, String> selectedItem = new HashMap<>();
         if (!list.isEmpty()) {
-            numberPicture++;
+
             if (list.size() > 1) {
                 Random random = new Random();
                 int index = random.nextInt(list.size());
                 selectedItem = list.get(index);
-            } else {
+            }else{
                 selectedItem = list.getFirst();
 
             }
-            outfit.put(PICTURE + String.valueOf(numberPicture), selectedItem.get(IMAGE));
+            outfit.add(selectedItem.get(IMAGE));
 
         }
     }
 
     private Map<String, String> addRow(Map<String, Object> row) {
-        Map<String, String> result = new HashMap<>();
-        result.put(COLOR, (String) row.get(COLOR));
+        Map<String,String> result = new HashMap<>();
+        result.put(COLOR,(String) row.get(COLOR));
         result.put(IMAGE, (String) row.get(IMAGE_URL));
         return result;
     }
