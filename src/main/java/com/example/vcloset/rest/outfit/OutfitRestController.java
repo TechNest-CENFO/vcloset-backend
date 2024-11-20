@@ -2,6 +2,7 @@ package com.example.vcloset.rest.outfit;
 
 import com.example.vcloset.logic.entity.category.Category;
 import com.example.vcloset.logic.entity.category.CategoryEnum;
+import com.example.vcloset.logic.entity.category.CategoryRepository;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
@@ -10,6 +11,7 @@ import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.outfit.OutfitRepository;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
+import com.example.vcloset.logic.service.category.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +49,15 @@ public class OutfitRestController {
 
     @Autowired
     private GlobalResponseHandler globalResponseHandler;
+
     @Autowired
     private ClothingRepository clothingRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     private List<String> outfit = new ArrayList<>();
+    private CategoryRepository categoryRepository;
 
 
     @GetMapping
@@ -264,6 +271,8 @@ public class OutfitRestController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
 
+        System.out.println(outfit);
+
         Set<Clothing> clothingToAdd = new HashSet<>();
         for (Clothing clothing : outfit.getClothing()) {
             try {
@@ -276,15 +285,16 @@ public class OutfitRestController {
         }
 
         Optional<User> foundUser = userRepository.findById(userId);
-        if (foundUser.isPresent()) {
+        if (foundUser.isPresent() && outfit.getClothing().size()>=2) {
             Outfit outfitToAdd = new Outfit();
             outfitToAdd.setUser(foundUser.get());
-
-            if (outfit.getCategory() == null) {
-                Category category = new Category();
-                category.setName(CategoryEnum.CASUAL);
-                category.setId(1L);
+            Category category;
+            try {
+                category = categoryService.findByName(outfit.getCategory().getName())
+                        .orElseThrow(() -> new IllegalArgumentException("Category not found: "));
                 outfitToAdd.setCategory(category);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
             outfitToAdd.setName(outfit.getName());

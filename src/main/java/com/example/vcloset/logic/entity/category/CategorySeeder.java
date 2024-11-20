@@ -22,7 +22,18 @@ public class CategorySeeder implements ApplicationListener<ContextRefreshedEvent
     }
 
     private void loadCategorys() {
-        CategoryEnum[] categoryNames = new CategoryEnum[] { CategoryEnum.CASUAL, CategoryEnum.FORMAL, CategoryEnum.SEMI_FORMAL, CategoryEnum.SPORTSWEAR, CategoryEnum.BEACHWEAR, CategoryEnum.TRAVEL, CategoryEnum.FESTIVAL, CategoryEnum.STREETWEAR };
+        CategoryEnum[] categoryNames = new CategoryEnum[]
+                {
+                CategoryEnum.CASUAL,
+                CategoryEnum.FORMAL,
+                CategoryEnum.SEMI_FORMAL,
+                CategoryEnum.DEPORTIVO,
+                CategoryEnum.PLAYERO,
+                CategoryEnum.VIAJE,
+                CategoryEnum.FESTIVAL,
+                CategoryEnum.CALLEJERO,
+                CategoryEnum.OTRO
+                };
 
         Arrays.stream(categoryNames).forEach((categoryName) -> {
             Optional<Category> optionalCategory = categoryRepository.findByName(categoryName);
