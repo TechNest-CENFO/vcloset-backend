@@ -1,6 +1,9 @@
 package com.example.vcloset.rest.outfit;
 
+import com.example.vcloset.logic.entity.category.Category;
+import com.example.vcloset.logic.entity.category.CategoryEnum;
 import com.example.vcloset.logic.entity.clothing.Clothing;
+import com.example.vcloset.logic.entity.clothing.ClothingRepository;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.http.Meta;
 import com.example.vcloset.logic.entity.outfit.Outfit;
@@ -32,10 +35,9 @@ public class OutfitRestController {
     public static final String ACCESORIO = "ACCESORIO";
     public static final String TYPE = "type";
     public static final String CALZADO = "CALZADO";
-    public static final String PICTURE = "picture";
     public static final String COLOR = "color";
-    public static final String IMAGE = "image";
     public static final String IMAGE_URL = "image_url";
+    public static final String ID = "id";
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -44,9 +46,11 @@ public class OutfitRestController {
 
     @Autowired
     private GlobalResponseHandler globalResponseHandler;
+    @Autowired
+    private ClothingRepository clothingRepository;
 
-    private Map<String, String> outfit = new HashMap<>();
-    private int numberPicture = 0;
+    private List<Clothing> outfit = new ArrayList<>();
+
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "1") int page,
@@ -80,14 +84,13 @@ public class OutfitRestController {
             meta.setPageNumber(outfitPage.getNumber() + 1);
             meta.setPageSize(outfitPage.getSize());
 
-            return new GlobalResponseHandler().handleResponse("Outfits retrieved successfully",
+            return new GlobalResponseHandler().handleResponse("Outfit retrieved successfully",
                     outfitPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
         }
     }
-
 
     @GetMapping("/user/{userId}/favorite")
     @PreAuthorize("isAuthenticated()")
@@ -113,7 +116,6 @@ public class OutfitRestController {
         }
     }
 
-
     @Transactional
     @GetMapping("/user/{userId}/category/{category}")
     @PreAuthorize("isAuthenticated()")
@@ -128,15 +130,15 @@ public class OutfitRestController {
 
             List<Outfit> allOutfitItems = outfitRepository.getOutfitByUserAndCategory(userId, type);
 
-            Page<Outfit> clothingPage = new PageImpl<>(allOutfitItems, pageable, allOutfitItems.size());
+            Page<Outfit> outfitPage = new PageImpl<>(allOutfitItems, pageable, allOutfitItems.size());
 
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-            meta.setTotalPages(clothingPage.getTotalPages());
-            meta.setTotalElements(clothingPage.getTotalElements());
-            meta.setPageNumber(clothingPage.getNumber() + 1);
-            meta.setPageSize(clothingPage.getSize());
+            meta.setTotalPages(outfitPage.getTotalPages());
+            meta.setTotalElements(outfitPage.getTotalElements());
+            meta.setPageNumber(outfitPage.getNumber() + 1);
+            meta.setPageSize(outfitPage.getSize());
             return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
-                    clothingPage.getContent(), HttpStatus.OK, meta);
+                    outfitPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
@@ -169,8 +171,8 @@ public class OutfitRestController {
     }
 
     private void getTypeList(List<Map<String, Object>> temporal) {
-        numberPicture=0;
-        outfit = new HashMap<>();
+
+        outfit = new ArrayList<>();
         // Crear un mapa para agrupar las listas por tipo
         Map<String, List<Map<String, String>>> categories = new HashMap<>();
         categories.put(SUPERIOR, new ArrayList<>());
@@ -236,25 +238,36 @@ public class OutfitRestController {
     //Método para seleccionar aleatoriamente un elemento de la lista
     private void selectRandomFromList(List<Map<String, String>> list) {
         Map<String, String> selectedItem = new HashMap<>();
+        int index = 0;
         if (!list.isEmpty()) {
-            numberPicture ++;
             if (list.size() > 1) {
                 Random random = new Random();
-                int index = random.nextInt(list.size());
+                index = random.nextInt(list.size());
                 selectedItem = list.get(index);
             }else{
                 selectedItem = list.getFirst();
 
             }
-            outfit.put(PICTURE + String.valueOf(numberPicture), selectedItem.get(IMAGE));
+
+            addClothing(selectedItem);
+
 
         }
     }
 
+    private void addClothing(Map<String, String> selectedItem) {
+
+        Clothing item = new Clothing();
+        item.setId(Long.valueOf(selectedItem.get(ID)));
+        item.setImageUrl(selectedItem.get(IMAGE_URL));
+        outfit.add(item);
+    }
+
     private Map<String, String> addRow(Map<String, Object> row) {
         Map<String,String> result = new HashMap<>();
+        result.put(ID, String.valueOf(row.get(ID)));
         result.put(COLOR,(String) row.get(COLOR));
-        result.put(IMAGE, (String) row.get(IMAGE_URL));
+        result.put(IMAGE_URL, (String) row.get(IMAGE_URL));
         return result;
     }
 
@@ -291,4 +304,49 @@ public class OutfitRestController {
     }
 
 
+
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
+
+        Set<Clothing> clothingToAdd = new HashSet<>();
+        for (Clothing clothing : outfit.getClothing()) {
+            try {
+                Clothing foundClothing = clothingRepository.findById(clothing.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Clothing not found: " + clothing.getId()));
+                clothingToAdd.add(foundClothing);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Outfit outfitToAdd = new Outfit();
+            outfitToAdd.setUser(foundUser.get());
+
+            if (outfit.getCategory() == null) {
+                Category category = new Category();
+                category.setName(CategoryEnum.CASUAL);
+                category.setId(1L);
+                outfitToAdd.setCategory(category);
+            }
+
+            outfitToAdd.setName(outfit.getName());
+            outfitToAdd.setImageUrl("test");
+            outfitToAdd.setFavorite(false);
+            outfitToAdd.setPublic(true);
+
+            for (Clothing clothing : clothingToAdd) {
+                clothing.getOutfits().add(outfitToAdd);
+            }
+            outfitToAdd.setClothing(clothingToAdd);
+
+            Outfit savedOutfit = outfitRepository.save(outfitToAdd);
+            return globalResponseHandler.handleResponse("Outfit created successfully",
+                    savedOutfit, HttpStatus.CREATED, request);
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
 }

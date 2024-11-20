@@ -41,7 +41,7 @@ public class Outfit {
     private User user;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Outfit_collections",
             joinColumns = @JoinColumn(name = "outfit_"),
             inverseJoinColumns = @JoinColumn(name = "collections_id"))

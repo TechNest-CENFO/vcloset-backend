@@ -28,6 +28,7 @@ public class Clothing {
     @JoinColumn(name = "clothing_type_id")
     private ClothingType clothingType;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "clothing_outfit",
             joinColumns = @JoinColumn(name = "clothing_id"),
