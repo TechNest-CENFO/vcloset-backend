@@ -45,8 +45,8 @@ public class OutfitRestController {
     @Autowired
     private GlobalResponseHandler globalResponseHandler;
 
-    private Map<String, String> outfit = new HashMap<>();
-    private int numberPicture = 0;
+    private List<String> outfit = new ArrayList<>();
+
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "1") int page,
@@ -167,8 +167,8 @@ public class OutfitRestController {
     }
 
     private void getTypeList(List<Map<String, Object>> temporal) {
-        numberPicture=0;
-        outfit = new HashMap<>();
+
+        outfit = new ArrayList<>();
         // Crear un mapa para agrupar las listas por tipo
         Map<String, List<Map<String, String>>> categories = new HashMap<>();
         categories.put(SUPERIOR, new ArrayList<>());
@@ -235,7 +235,7 @@ public class OutfitRestController {
     private void selectRandomFromList(List<Map<String, String>> list) {
         Map<String, String> selectedItem = new HashMap<>();
         if (!list.isEmpty()) {
-            numberPicture ++;
+
             if (list.size() > 1) {
                 Random random = new Random();
                 int index = random.nextInt(list.size());
@@ -244,7 +244,7 @@ public class OutfitRestController {
                 selectedItem = list.getFirst();
 
             }
-            outfit.put(PICTURE + String.valueOf(numberPicture), selectedItem.get(IMAGE));
+            outfit.add(selectedItem.get(IMAGE));
 
         }
     }
@@ -255,4 +255,6 @@ public class OutfitRestController {
         result.put(IMAGE, (String) row.get(IMAGE_URL));
         return result;
     }
+
+
 }
