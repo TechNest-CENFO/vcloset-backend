@@ -73,20 +73,21 @@ public class OutfitRestController {
         Optional<User> foundUser = userRepository.findById(userId);
         if (foundUser.isPresent()) {
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Outfit> outfitPage = outfitRepository.findByUserId(userId, pageable);
+            Page<Outfit> outfitPage = outfitRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
             meta.setTotalPages(outfitPage.getTotalPages());
             meta.setTotalElements(outfitPage.getTotalElements());
             meta.setPageNumber(outfitPage.getNumber() + 1);
             meta.setPageSize(outfitPage.getSize());
 
-            return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
+            return new GlobalResponseHandler().handleResponse("Outfits retrieved successfully",
                     outfitPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
 
     @GetMapping("/user/{userId}/favorite")
     @PreAuthorize("isAuthenticated()")
@@ -97,20 +98,21 @@ public class OutfitRestController {
         Optional<User> foundUser = userRepository.findById(userId);
         if (foundUser.isPresent()) {
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Outfit> outfitPage = outfitRepository.findByUserIdAndIsFavoriteTrue(userId, pageable);
+            Page<Outfit> outfitPage = outfitRepository.findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
             meta.setTotalPages(outfitPage.getTotalPages());
             meta.setTotalElements(outfitPage.getTotalElements());
             meta.setPageNumber(outfitPage.getNumber() + 1);
             meta.setPageSize(outfitPage.getSize());
 
-            return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
+            return new GlobalResponseHandler().handleResponse("Favorites retrieved successfully",
                     outfitPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
 
     @Transactional
     @GetMapping("/user/{userId}/category/{category}")
@@ -255,4 +257,38 @@ public class OutfitRestController {
         result.put(IMAGE, (String) row.get(IMAGE_URL));
         return result;
     }
+
+    @PutMapping("/{outfitId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateOutfit(@PathVariable Long outfitId, @RequestBody Outfit outfit, HttpServletRequest request) {
+        Optional<Outfit> foundOutfit = outfitRepository.findById(outfitId);
+        if (foundOutfit.isPresent()) {
+            outfit.setId(foundOutfit.get().getId());
+            outfit.setUser(foundOutfit.get().getUser());
+            outfitRepository.save(outfit);
+            return new GlobalResponseHandler().handleResponse("Order updated successfully",
+                    outfit, HttpStatus.OK, request);
+        } else {
+            return new GlobalResponseHandler().handleResponse("Order id " + outfitId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
+
+    @PutMapping("/{outfitId}/delete")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteOutfit(@PathVariable Long outfitId, HttpServletRequest request) {
+        Optional<Outfit> foundOutfit = outfitRepository.findById(outfitId);
+        if (foundOutfit.isPresent()) {
+            Outfit outfit = foundOutfit.get();
+            outfit.setDeleted(true);
+            outfitRepository.save(outfit);
+            return new GlobalResponseHandler().handleResponse("Order deleted successfully",
+                    outfit, HttpStatus.OK, request);
+        } else {
+            return new GlobalResponseHandler().handleResponse("Order id " + outfitId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
+
+
 }

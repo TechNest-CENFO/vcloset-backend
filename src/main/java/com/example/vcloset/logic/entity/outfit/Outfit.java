@@ -50,10 +50,13 @@ public class Outfit {
     @Column(nullable = false)
     private String imageUrl;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isDeleted = false;
+
     public Outfit() {
     }
 
-    public Outfit(Integer id, String name, Set<Clothing> clothing, Boolean isPublic, Boolean isFavorite, Category category, User user, Set<Collection> collections, String imageUrl) {
+    public Outfit(Integer id, String name, Set<Clothing> clothing, Boolean isPublic, Boolean isFavorite, Category category, User user, Set<Collection> collections, String imageUrl, Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.clothing = clothing;
@@ -63,6 +66,7 @@ public class Outfit {
         this.user = user;
         this.collections = collections;
         this.imageUrl = imageUrl;
+        this.isDeleted = isDeleted;
     }
 
     public Integer getId() {
@@ -135,5 +139,13 @@ public class Outfit {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }
