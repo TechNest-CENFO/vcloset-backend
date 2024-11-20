@@ -35,10 +35,9 @@ public class OutfitRestController {
     public static final String ACCESORIO = "ACCESORIO";
     public static final String TYPE = "type";
     public static final String CALZADO = "CALZADO";
-    public static final String PICTURE = "picture";
     public static final String COLOR = "color";
-    public static final String IMAGE = "image";
     public static final String IMAGE_URL = "image_url";
+    public static final String ID = "id";
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -50,7 +49,7 @@ public class OutfitRestController {
     @Autowired
     private ClothingRepository clothingRepository;
 
-    private List<String> outfit = new ArrayList<>();
+    private List<Clothing> outfit = new ArrayList<>();
 
 
     @GetMapping
@@ -239,25 +238,36 @@ public class OutfitRestController {
     //Método para seleccionar aleatoriamente un elemento de la lista
     private void selectRandomFromList(List<Map<String, String>> list) {
         Map<String, String> selectedItem = new HashMap<>();
+        int index = 0;
         if (!list.isEmpty()) {
-
             if (list.size() > 1) {
                 Random random = new Random();
-                int index = random.nextInt(list.size());
+                index = random.nextInt(list.size());
                 selectedItem = list.get(index);
             }else{
                 selectedItem = list.getFirst();
 
             }
-            outfit.add(selectedItem.get(IMAGE));
+
+            addClothing(selectedItem);
+
 
         }
     }
 
+    private void addClothing(Map<String, String> selectedItem) {
+
+        Clothing item = new Clothing();
+        item.setId(Long.valueOf(selectedItem.get(ID)));
+        item.setImageUrl(selectedItem.get(IMAGE_URL));
+        outfit.add(item);
+    }
+
     private Map<String, String> addRow(Map<String, Object> row) {
         Map<String,String> result = new HashMap<>();
+        result.put(ID, String.valueOf(row.get(ID)));
         result.put(COLOR,(String) row.get(COLOR));
-        result.put(IMAGE, (String) row.get(IMAGE_URL));
+        result.put(IMAGE_URL, (String) row.get(IMAGE_URL));
         return result;
     }
 
