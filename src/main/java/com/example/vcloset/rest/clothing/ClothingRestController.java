@@ -175,4 +175,19 @@ public class ClothingRestController {
                 });
     }
 
+
+    @PutMapping("/edit/{clothingId}")
+    public ResponseEntity<?> editClothingItem(@PathVariable Long clothingId, @RequestBody Clothing clothing, HttpServletRequest request) {
+
+            Optional<ClothingType> foundClothingType = clothingTypeRepository.findById(clothing.getClothingType().getId());
+            if (foundClothingType.isPresent()) {
+                Clothing savedClothing = clothingRepository.save(clothing);
+                return globalResponseHandler.handleResponse("Clothing created successfully",
+                        savedClothing, HttpStatus.CREATED, request);
+            } else {
+                return globalResponseHandler.handleResponse("Clothing type id " + clothing.getClothingType().getId() + " not found",
+                        HttpStatus.NOT_FOUND, request);
+            }
+    }
+
 }

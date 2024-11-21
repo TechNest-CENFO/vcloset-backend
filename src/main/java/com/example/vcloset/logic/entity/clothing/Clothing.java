@@ -60,6 +60,7 @@ public class Clothing {
     public Clothing() {
         this.isFavorite = false;
         this.isPublic = true;
+        this.isClothingItemActive = true;
     }
 
     public Long getId() {
