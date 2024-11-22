@@ -2,6 +2,7 @@ package com.example.vcloset.rest.outfit;
 
 import com.example.vcloset.logic.entity.category.Category;
 import com.example.vcloset.logic.entity.category.CategoryEnum;
+import com.example.vcloset.logic.entity.category.CategoryRepository;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
@@ -10,6 +11,7 @@ import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.outfit.OutfitRepository;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
+import com.example.vcloset.logic.service.category.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class OutfitRestController {
     public static final String COLOR = "color";
     public static final String IMAGE_URL = "image_url";
     public static final String ID = "id";
+    public static final String SUB_TYPE = "sub_type";
+    public static final String VESTIDOS = "VESTIDOS";
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -46,10 +50,18 @@ public class OutfitRestController {
 
     @Autowired
     private GlobalResponseHandler globalResponseHandler;
+
     @Autowired
     private ClothingRepository clothingRepository;
 
+
+    @Autowired
+    private CategoryService categoryService;
+
+    private CategoryRepository categoryRepository;
+  
     private List<Clothing> outfit = new ArrayList<>();
+    private boolean isDress = false;
 
 
     @GetMapping
@@ -198,13 +210,17 @@ public class OutfitRestController {
             if (randomBool) {
                 // Selección de SUPERIOR, INFERIOR, CALZADOS, ABRIGOS
                 selectRandomFromList(categories.get(SUPERIOR));
+                Object subTypeObject = categories.get(SUB_TYPE);
+
                 selectRandomFromList(categories.get(INFERIOR));
                 selectRandomFromList(categories.get(CALZADO));
                 selectRandomFromList(categories.get(ABRIGO));
             } else {
                 // Si es 'false', se selecciona de 'CUERPO_COMPLETO'
                 selectRandomFromList(categories.get(CUERPO_COMPLETO));
-                selectRandomFromList(categories.get(SUPERIOR));
+                if(!isDress) {
+                    selectRandomFromList(categories.get(SUPERIOR));
+                }
                 selectRandomFromList(categories.get(CALZADO));
                 selectRandomFromList(categories.get(ACCESORIO));
             }
@@ -212,6 +228,7 @@ public class OutfitRestController {
             // Si 'SUPERIOR' no tiene elementos selecciona de cuerpo completo
             if(!categories.get(SUPERIOR).isEmpty()){
                 selectRandomFromList(categories.get(SUPERIOR));
+
                 // Lista de categorías a verificar
                 List<String> categoriesToCheck = List.of(
                         INFERIOR, CALZADO, ABRIGO, ACCESORIO
@@ -227,7 +244,9 @@ public class OutfitRestController {
 
             }else if (!categories.get(CUERPO_COMPLETO).isEmpty()){
                 selectRandomFromList(categories.get(CUERPO_COMPLETO));
-                selectRandomFromList(categories.get(SUPERIOR));
+                if(!isDress) {
+                    selectRandomFromList(categories.get(SUPERIOR));
+                }
                 selectRandomFromList(categories.get(CALZADO));
                 selectRandomFromList(categories.get(ACCESORIO));
             }
@@ -248,11 +267,12 @@ public class OutfitRestController {
                 selectedItem = list.getFirst();
 
             }
-
+            isDress = selectedItem.get(SUB_TYPE).contains(VESTIDOS);
             addClothing(selectedItem);
 
 
         }
+
     }
 
     private void addClothing(Map<String, String> selectedItem) {
@@ -266,6 +286,7 @@ public class OutfitRestController {
     private Map<String, String> addRow(Map<String, Object> row) {
         Map<String,String> result = new HashMap<>();
         result.put(ID, String.valueOf(row.get(ID)));
+        result.put(SUB_TYPE, (String) row.get(SUB_TYPE));
         result.put(COLOR,(String) row.get(COLOR));
         result.put(IMAGE_URL, (String) row.get(IMAGE_URL));
         return result;
@@ -308,6 +329,8 @@ public class OutfitRestController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
 
+        System.out.println(outfit);
+
         Set<Clothing> clothingToAdd = new HashSet<>();
         for (Clothing clothing : outfit.getClothing()) {
             try {
@@ -320,15 +343,16 @@ public class OutfitRestController {
         }
 
         Optional<User> foundUser = userRepository.findById(userId);
-        if (foundUser.isPresent()) {
+        if (foundUser.isPresent() && outfit.getClothing().size()>=2) {
             Outfit outfitToAdd = new Outfit();
             outfitToAdd.setUser(foundUser.get());
-
-            if (outfit.getCategory() == null) {
-                Category category = new Category();
-                category.setName(CategoryEnum.CASUAL);
-                category.setId(1L);
+            Category category;
+            try {
+                category = categoryService.findByName(outfit.getCategory().getName())
+                        .orElseThrow(() -> new IllegalArgumentException("Category not found: "));
                 outfitToAdd.setCategory(category);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
             outfitToAdd.setName(outfit.getName());
