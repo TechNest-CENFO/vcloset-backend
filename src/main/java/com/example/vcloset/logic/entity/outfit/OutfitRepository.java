@@ -1,6 +1,5 @@
 package com.example.vcloset.logic.entity.outfit;
 
-import com.example.vcloset.logic.entity.clothing.Clothing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,8 +14,11 @@ public interface OutfitRepository extends JpaRepository<Outfit, Long> {
 
     Page<Outfit> findByUserId(Long userId, Pageable pageable);
 
-
     Page<Outfit> findByUserIdAndIsFavoriteTrue(Long userId, Pageable pageable);
+
+    Page<Outfit> findByUserIdAndIsDeletedFalse(Long userId, Pageable pageable);
+
+    Page<Outfit> findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(Long userId, Pageable pageable);
 
     @Procedure(name = "GetOutfitByUserAndCategory")
     List<Outfit> getOutfitByUserAndCategory(
