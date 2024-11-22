@@ -158,9 +158,6 @@ public class ClothingRestController {
         }
     }
 
-
-
-
     @PatchMapping("/delete/{clothing_id}")
     @PreAuthorize("isAuthenticated()")
     public Optional<Clothing> deleteClothingItem(@PathVariable  Long clothing_id ,@RequestBody Clothing clothing, HttpServletRequest request) {
@@ -172,19 +169,24 @@ public class ClothingRestController {
                 });
     }
 
-
-    @PutMapping("/edit/{clothingId}")
-    public ResponseEntity<?> editClothingItem(@PathVariable Long clothingId, @RequestBody Clothing clothing, HttpServletRequest request) {
-
+    @PutMapping("/edit/user/{userId}/item/{clothingId}")
+    public ResponseEntity<?> editClothingItem(@PathVariable Long clothingId,@PathVariable Long userId, @RequestBody Clothing clothing, HttpServletRequest request) {
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
             Optional<ClothingType> foundClothingType = clothingTypeRepository.findById(clothing.getClothingType().getId());
             if (foundClothingType.isPresent()) {
+                clothing.setUser(foundUser.get());
                 Clothing savedClothing = clothingRepository.save(clothing);
-                return globalResponseHandler.handleResponse("Clothing created successfully",
+                return globalResponseHandler.handleResponse("Clothing updated successfully",
                         savedClothing, HttpStatus.CREATED, request);
             } else {
                 return globalResponseHandler.handleResponse("Clothing type id " + clothing.getClothingType().getId() + " not found",
                         HttpStatus.NOT_FOUND, request);
             }
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
     }
 
 }
