@@ -12,10 +12,12 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
 
     Page<Clothing> findByUserId(Long userId, Pageable pageable);
 
-    Page<Clothing> findByUserIdAndIsFavoriteTrue(Long userId, Pageable pageable);
+    Page<Clothing> findByUserIdAndIsFavoriteTrueAndIsClothingItemActiveTrue(Long userId, Pageable pageable);
 
     @Procedure(name = "GetClothingByUserAndType")
     List<Clothing> getClothingByUserAndType(
             @Param("userIdParam") Long userId,
             @Param("typeParam") String type);
+
+    Page<Clothing> findByIsClothingItemActiveTrueAndUserId(Long userId, Pageable pageable);
 }

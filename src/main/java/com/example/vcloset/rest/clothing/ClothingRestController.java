@@ -88,17 +88,14 @@ public class ClothingRestController {
                                           HttpServletRequest request) {
         Optional<User> foundUser = userRepository.findById(userId);
         if (foundUser.isPresent()) {
-
-
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Clothing> clothingPage = clothingRepository.findByUserId(userId, pageable);
+            Page<Clothing> clothingPage = clothingRepository.findByIsClothingItemActiveTrueAndUserId(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
             meta.setTotalPages(clothingPage.getTotalPages());
             meta.setTotalElements(clothingPage.getTotalElements());
             meta.setPageNumber(clothingPage.getNumber() + 1);
             meta.setPageSize(clothingPage.getSize());
-
-            return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
+            return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
                     clothingPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
@@ -117,7 +114,7 @@ public class ClothingRestController {
 
 
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Clothing> clothingPage = clothingRepository.findByUserIdAndIsFavoriteTrue(userId, pageable);
+            Page<Clothing> clothingPage = clothingRepository.findByUserIdAndIsFavoriteTrueAndIsClothingItemActiveTrue(userId, pageable);
             Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
             meta.setTotalPages(clothingPage.getTotalPages());
             meta.setTotalElements(clothingPage.getTotalElements());
@@ -153,7 +150,7 @@ public class ClothingRestController {
             meta.setTotalElements(clothingPage.getTotalElements());
             meta.setPageNumber(clothingPage.getNumber() + 1);
             meta.setPageSize(clothingPage.getSize());
-            return new GlobalResponseHandler().handleResponse("Order retrieved successfully",
+            return new GlobalResponseHandler().handleResponse("Item retrieved successfully",
                     clothingPage.getContent(), HttpStatus.OK, meta);
         } else {
             return new GlobalResponseHandler().handleResponse("User id " + userId + " not found",
@@ -161,5 +158,35 @@ public class ClothingRestController {
         }
     }
 
+    @PatchMapping("/delete/{clothing_id}")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<Clothing> deleteClothingItem(@PathVariable  Long clothing_id ,@RequestBody Clothing clothing, HttpServletRequest request) {
+
+        return clothingRepository.findById(clothing_id)
+                .map(existingClothingItem -> {
+                    existingClothingItem.setClothingItemActive(false);
+                    return clothingRepository.save(existingClothingItem);
+                });
+    }
+
+    @PutMapping("/edit/user/{userId}/item/{clothingId}")
+    public ResponseEntity<?> editClothingItem(@PathVariable Long clothingId,@PathVariable Long userId, @RequestBody Clothing clothing, HttpServletRequest request) {
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Optional<ClothingType> foundClothingType = clothingTypeRepository.findById(clothing.getClothingType().getId());
+            if (foundClothingType.isPresent()) {
+                clothing.setUser(foundUser.get());
+                Clothing savedClothing = clothingRepository.save(clothing);
+                return globalResponseHandler.handleResponse("Clothing updated successfully",
+                        savedClothing, HttpStatus.CREATED, request);
+            } else {
+                return globalResponseHandler.handleResponse("Clothing type id " + clothing.getClothingType().getId() + " not found",
+                        HttpStatus.NOT_FOUND, request);
+            }
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
 
 }
