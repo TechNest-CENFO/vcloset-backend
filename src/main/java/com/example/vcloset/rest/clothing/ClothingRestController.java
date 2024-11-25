@@ -189,4 +189,25 @@ public class ClothingRestController {
         }
     }
 
+    @PatchMapping("/setIsFavorite/user/{userId}/item/{clothingId}")
+    public ResponseEntity<?> setIsFavorite(@PathVariable Long clothingId,@PathVariable Long userId, @RequestBody Clothing clothing, HttpServletRequest request) {
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Optional<Clothing> foundClothing = clothingRepository.findById(clothing.getId());
+            if (foundClothing.isPresent()) {
+                clothing.setIsFavorite(!foundClothing.get().getIsFavorite());
+                clothing.setUser(foundUser.get());
+                Clothing savedClothing = clothingRepository.save(clothing);
+                return globalResponseHandler.handleResponse("Clothing updated successfully",
+                        savedClothing, HttpStatus.CREATED, request);
+            } else {
+                return globalResponseHandler.handleResponse("Clothing type id " + clothing.getClothingType().getId() + " not found",
+                        HttpStatus.NOT_FOUND, request);
+            }
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
+
 }

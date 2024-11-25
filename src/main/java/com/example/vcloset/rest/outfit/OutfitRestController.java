@@ -358,7 +358,7 @@ public class OutfitRestController {
             outfitToAdd.setName(outfit.getName());
             outfitToAdd.setImageUrl("test");
             outfitToAdd.setFavorite(false);
-            outfitToAdd.setPublic(true);
+            outfitToAdd.setIsPublic(true);
 
             for (Clothing clothing : clothingToAdd) {
                 clothing.getOutfits().add(outfitToAdd);
@@ -368,6 +368,52 @@ public class OutfitRestController {
             Outfit savedOutfit = outfitRepository.save(outfitToAdd);
             return globalResponseHandler.handleResponse("Outfit created successfully",
                     savedOutfit, HttpStatus.CREATED, request);
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
+
+    @PatchMapping("/setIsFavorite/user/{userId}/item/{outfitId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> setIsFavorite(@PathVariable Long outfitId,@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Optional<Outfit> foundOutfit = outfitRepository.findById(outfitId);
+            System.out.println(foundOutfit);
+            if (foundOutfit.isPresent()) {
+                outfit.setFavorite(!foundOutfit.get().getFavorite());
+                outfit.setUser(foundUser.get());
+                Outfit savedOutfit = outfitRepository.save(outfit);
+                return globalResponseHandler.handleResponse("Outfit updated successfully",
+                        savedOutfit, HttpStatus.CREATED, request);
+            } else {
+                return globalResponseHandler.handleResponse("Outfit with id:  " + outfit.getId() + " not found",
+                        HttpStatus.NOT_FOUND, request);
+            }
+        } else {
+            return globalResponseHandler.handleResponse("User id " + userId + " not found",
+                    HttpStatus.NOT_FOUND, request);
+        }
+    }
+
+    @PatchMapping("/setIsPublic/user/{userId}/item/{outfitId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> setIsPublic(@PathVariable Long outfitId,@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Optional<Outfit> foundOutfit = outfitRepository.findById(outfitId);
+            System.out.println(foundOutfit);
+            if (foundOutfit.isPresent()) {
+                outfit.setIsPublic(!foundOutfit.get().getIsPublic());
+                outfit.setUser(foundUser.get());
+                Outfit savedOutfit = outfitRepository.save(outfit);
+                return globalResponseHandler.handleResponse("Outfit updated successfully",
+                        savedOutfit, HttpStatus.CREATED, request);
+            } else {
+                return globalResponseHandler.handleResponse("Outfit with id:  " + outfit.getId() + " not found",
+                        HttpStatus.NOT_FOUND, request);
+            }
         } else {
             return globalResponseHandler.handleResponse("User id " + userId + " not found",
                     HttpStatus.NOT_FOUND, request);
