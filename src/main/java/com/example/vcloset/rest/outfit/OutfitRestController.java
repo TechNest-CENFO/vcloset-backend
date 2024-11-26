@@ -296,17 +296,70 @@ public class OutfitRestController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> updateOutfit(@PathVariable Long outfitId, @RequestBody Outfit outfit, HttpServletRequest request) {
         Optional<Outfit> foundOutfit = outfitRepository.findById(outfitId);
+
         if (foundOutfit.isPresent()) {
-            outfit.setId(foundOutfit.get().getId());
-            outfit.setUser(foundOutfit.get().getUser());
-            outfitRepository.save(outfit);
-            return new GlobalResponseHandler().handleResponse("Order updated successfully",
-                    outfit, HttpStatus.OK, request);
+            Outfit existingOutfit = foundOutfit.get();
+
+            existingOutfit.setName(outfit.getName());
+
+            if (outfit.getCategory() != null && outfit.getCategory().getName() != null) {
+                try {
+                    Category category = categoryService.findByName(outfit.getCategory().getName())
+                            .orElseThrow(() -> new IllegalArgumentException("Category not found: " + outfit.getCategory().getName()));
+                    existingOutfit.setCategory(category);
+                } catch (Exception e) {
+                    return globalResponseHandler.handleResponse(
+                            "Category error: " + e.getMessage(),
+                            HttpStatus.BAD_REQUEST,
+                            request
+                    );
+                }
+            }
+
+            Set<Clothing> clothingToAdd = new HashSet<>();
+            for (Clothing clothing : outfit.getClothing()) {
+                try {
+                    Clothing foundClothing = clothingRepository.findById(clothing.getId())
+                            .orElseThrow(() -> new IllegalArgumentException("Clothing not found: " + clothing.getId()));
+                    clothingToAdd.add(foundClothing);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            if (!clothingToAdd.isEmpty()) {
+                for (Clothing clothing : existingOutfit.getClothing()) {
+                    clothing.getOutfits().remove(existingOutfit);
+                }
+                for (Clothing clothing : clothingToAdd) {
+                    clothing.getOutfits().add(existingOutfit);
+                }
+                existingOutfit.setClothing(clothingToAdd);
+            }
+
+
+            existingOutfit.setFavorite(outfit.getFavorite() != null ? outfit.getFavorite() : existingOutfit.getFavorite());
+            existingOutfit.setPublic(outfit.getPublic() != null ? outfit.getPublic() : existingOutfit.getPublic());
+            existingOutfit.setImageUrl(outfit.getImageUrl() != null ? outfit.getImageUrl() : existingOutfit.getImageUrl());
+
+            Outfit updatedOutfit = outfitRepository.save(existingOutfit);
+
+            return globalResponseHandler.handleResponse(
+                    "Outfit updated successfully",
+                    updatedOutfit,
+                    HttpStatus.OK,
+                    request
+            );
         } else {
-            return new GlobalResponseHandler().handleResponse("Order id " + outfitId + " not found",
-                    HttpStatus.NOT_FOUND, request);
+            return globalResponseHandler.handleResponse(
+                    "Outfit id " + outfitId + " not found",
+                    HttpStatus.NOT_FOUND,
+                    request
+            );
         }
     }
+
+
 
     @PutMapping("/{outfitId}/delete")
     @PreAuthorize("isAuthenticated()")
