@@ -17,10 +17,10 @@ CREATE PROCEDURE GetClothingTypeSP(
     IN userIdParam BIGINT
 )
 BEGIN
-SELECT  c.*, ct.type
-FROM clothing c
-         JOIN vcloset.clothing_type ct ON c.clothing_type_id = ct.id
-WHERE c.user_id = userIdParam order by ct.type;
+    SELECT  c.*, ct.type, ct.sub_type
+    FROM clothing c
+             JOIN clothing_type ct ON c.clothing_type_id = ct.id
+    WHERE c.user_id = userIdParam order by ct.type;
 END //
 DELIMITER ;
 
