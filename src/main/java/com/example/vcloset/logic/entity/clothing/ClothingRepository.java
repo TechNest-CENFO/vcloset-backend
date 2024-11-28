@@ -3,6 +3,7 @@ package com.example.vcloset.logic.entity.clothing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
@@ -21,5 +22,6 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
 
     Page<Clothing> findByIsClothingItemActiveTrueAndUserId(Long userId, Pageable pageable);
 
-    Page<Clothing> findByIsClothingItemActiveTrueAndIsPublicTrue(Pageable pageable);
+    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId")
+    Page<Clothing> findByIsClothingItemActiveTrueAndIsPublicTrue(Long userId, Pageable pageable);
 }

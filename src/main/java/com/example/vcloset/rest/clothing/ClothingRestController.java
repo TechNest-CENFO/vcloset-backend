@@ -210,15 +210,16 @@ public class ClothingRestController {
         }
     }
 
-    @GetMapping("/public")
+    @GetMapping("{userId}/public")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAllPublicClothing(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
+            @PathVariable Long userId,
             HttpServletRequest request) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Clothing> clothingPage = clothingRepository.findByIsClothingItemActiveTrueAndIsPublicTrue(pageable);
+        Page<Clothing> clothingPage = clothingRepository.findByIsClothingItemActiveTrueAndIsPublicTrue(userId, pageable);
         Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
         meta.setTotalPages(clothingPage.getTotalPages());
         meta.setTotalElements(clothingPage.getTotalElements());
