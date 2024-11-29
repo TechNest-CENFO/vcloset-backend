@@ -44,6 +44,7 @@ public class Clothing {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isClothingItemActive;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
