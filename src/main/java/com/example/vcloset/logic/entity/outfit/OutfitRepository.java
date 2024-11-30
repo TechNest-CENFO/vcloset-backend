@@ -28,4 +28,11 @@ public interface OutfitRepository extends JpaRepository<Outfit, Long> {
     @Query(value = "CALL GetClothingTypeSP(:userIdParam)", nativeQuery = true)
     List<Map<String, Object>> GetClothingTypeSP(
             @Param("userIdParam") Long userId);
+
+    @Procedure(value = "GetClothingDataSP")
+    List<Map<String, Object>> GetClothingDataSP(
+            @Param("userIdParam") Long userId,
+            @Param("clothingTypeIdParam") Long clothingTypeId
+    );
+
 }

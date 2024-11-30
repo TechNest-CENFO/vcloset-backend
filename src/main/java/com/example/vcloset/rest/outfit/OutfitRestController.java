@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.category.CategoryEnum;
 import com.example.vcloset.logic.entity.category.CategoryRepository;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
+import com.example.vcloset.logic.entity.clothing.clothingType.ClothingTypeSeeder;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.http.Meta;
 import com.example.vcloset.logic.entity.outfit.Outfit;
@@ -12,6 +13,7 @@ import com.example.vcloset.logic.entity.outfit.OutfitRepository;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
 import com.example.vcloset.logic.service.category.CategoryService;
+import com.example.vcloset.logic.service.outfit.OutfitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/outfit")
 @RestController
@@ -62,6 +65,8 @@ public class OutfitRestController {
   
     private List<Clothing> outfit = new ArrayList<>();
     private boolean isDress = false;
+    @Autowired
+    private ClothingTypeSeeder clothingTypeSeeder;
 
 
     @GetMapping
@@ -472,4 +477,119 @@ public class OutfitRestController {
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
+    private Map<String, Long> calculateTrends(List<Map<String, Object>> temporal, String trendKey) {
+        return temporal.stream()
+                .filter(row -> row != null && row.get(trendKey) != null) // Valida clave y valor
+                .collect(Collectors.groupingBy(
+                        row -> (String) row.get(trendKey),
+                        Collectors.counting()
+                ));
+    }
+
+    private String getMostFrequent(Map<String, Long> trendMap) {
+        if (trendMap == null || trendMap.isEmpty()) {
+            return null; // Si el mapa está vacío, retorna nulo
+        }
+        return trendMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    @Transactional
+    @GetMapping("/{userId}/generate")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> generateOutfit(@PathVariable Long userId, HttpServletRequest request) {
+        try {
+            // Obtiene prendas desde el Store Procedure
+            List<Map<String, Object>> temporal = outfitRepository.GetClothingDataSP(userId, null);
+
+            // Identificar tendencias
+            Map<String, Long> colorTrends = calculateTrends(temporal, COLOR);
+            Map<String, Long> categoryTrends = calculateTrends(temporal, TYPE);
+
+            String trendingColor = getMostFrequent(colorTrends);
+            String trendingCategory = getMostFrequent(categoryTrends);
+
+            // Generar outfit
+            getTypeList(temporal, trendingColor, trendingCategory);
+
+            return new GlobalResponseHandler().handleResponse(
+                    "Outfit generado con éxito",
+                    outfit,
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            e.printStackTrace(); // Usa un logger en producción
+            return new GlobalResponseHandler().handleResponse(
+                    "Error al tratar de generar el outfit",
+                    "Detalles del error: " + e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+    }
+
+    private void getTypeList(List<Map<String, Object>> temporal, String trendingColor, String trendingCategory) {
+        outfit = new ArrayList<>();
+        Map<String, List<Map<String, String>>> categories = new HashMap<>();
+
+        // Agrupa por categorías
+        initializeCategories(categories, temporal);
+
+        // Lógica de generación
+        for (String category : categories.keySet()) {
+            List<Map<String, String>> items = categories.get(category);
+
+            if (items != null && !items.isEmpty()) {
+                // Filtra por tendencias de color y categoría
+                List<Map<String, String>> trendingItems = items.stream()
+                        .filter(item -> {
+                            boolean colorMatch = trendingColor != null && trendingColor.equals(item.get(COLOR));
+                            boolean categoryMatch = trendingCategory != null && trendingCategory.equals(category);
+                            return colorMatch || categoryMatch;
+                        })
+                        .collect(Collectors.toList());
+
+                // Selección con preferencia por tendencias
+                if (!trendingItems.isEmpty()) {
+                    safeSelectFromList(trendingItems); // Usa el nuevo método
+                } else {
+                    safeSelectFromList(items); // Usa el nuevo método
+                }
+            }
+        }
+    }
+
+    private void initializeCategories(Map<String, List<Map<String, String>>> categories, List<Map<String, Object>> temporal) {
+        categories.put(SUPERIOR, new ArrayList<>());
+        categories.put(INFERIOR, new ArrayList<>());
+        categories.put(ABRIGO, new ArrayList<>());
+        categories.put(CALZADO, new ArrayList<>());
+        categories.put(CUERPO_COMPLETO, new ArrayList<>());
+        categories.put(ACCESORIO, new ArrayList<>());
+
+        for (Map<String, Object> row : temporal) {
+            if (row != null) {
+                String type = (String) row.get(TYPE);
+                if (type != null && categories.containsKey(type)) {
+                    Map<String, String> processedRow = addRow(row);
+                    if (processedRow != null) {
+                        categories.get(type).add(processedRow);
+                    }
+                }
+            }
+        }
+    }
+
+    private void safeSelectFromList(List<Map<String, String>> list) {
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("La lista está vacía. No se puede seleccionar un elemento.");
+        }
+        selectRandomFromList(list); // Llama al método existente con una lista válida
+    }
+
+
 }

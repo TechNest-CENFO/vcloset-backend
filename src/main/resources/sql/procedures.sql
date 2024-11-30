@@ -13,14 +13,29 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE GetClothingTypeSP(
-    IN userIdParam BIGINT
+create
+definer = vcloset@localhost procedure GetClothingTypeSP(IN userIdParam bigint)
+BEGIN
+SELECT  c.*, ct.type, ct.sub_type
+FROM vcloset.clothing c
+         JOIN vcloset.clothing_type ct ON c.clothing_type_id = ct.id
+WHERE c.user_id = userIdParam order ct.type;
+END; //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE GetClothingDataSP(
+    IN userIdParam BIGINT,
+    IN clothingTypeIdParam BIGINT
 )
 BEGIN
-SELECT  c.*, ct.type
-FROM clothing c
+SELECT c.*, ct.type, ct.sub_type
+FROM vcloset.clothing c
          JOIN vcloset.clothing_type ct ON c.clothing_type_id = ct.id
-WHERE c.user_id = userIdParam order by ct.type;
+WHERE c.user_id = userIdParam
+  AND (ct.id = clothingTypeIdParam OR clothingTypeIdParam IS NULL)
+ORDER BY ct.type;
 END //
 DELIMITER ;
 
