@@ -17,10 +17,12 @@ CREATE PROCEDURE GetClothingTypeSP(
     IN userIdParam BIGINT
 )
 BEGIN
-    SELECT  c.*, ct.type, ct.sub_type
-    FROM clothing c
-             JOIN clothing_type ct ON c.clothing_type_id = ct.id
-    WHERE c.user_id = userIdParam order by ct.type;
+SELECT  c.*, ct.type, ct.sub_type, c2.name nameCategory
+FROM clothing c
+         JOIN clothing_type ct ON c.clothing_type_id = ct.id
+         JOIN category_clothing cat ON c.id = cat.clothing_id
+         JOIN category c2 on cat.category_id = c2.id
+WHERE c.user_id = userIdParam order by ct.type;
 END //
 DELIMITER ;
 

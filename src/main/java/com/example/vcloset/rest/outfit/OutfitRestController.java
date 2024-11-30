@@ -12,6 +12,7 @@ import com.example.vcloset.logic.entity.outfit.OutfitRepository;
 import com.example.vcloset.logic.entity.user.User;
 import com.example.vcloset.logic.entity.user.UserRepository;
 import com.example.vcloset.logic.service.category.CategoryService;
+import com.example.vcloset.logic.service.outfit.OutfitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +31,7 @@ import java.util.*;
 @RequestMapping("/outfit")
 @RestController
 public class OutfitRestController {
-    public static final String SUPERIOR = "SUPERIOR";
-    public static final String INFERIOR = "INFERIOR";
-    public static final String ABRIGO = "ABRIGO";
-    public static final String CUERPO_COMPLETO = "CUERPO_COMPLETO";
-    public static final String ACCESORIO = "ACCESORIO";
-    public static final String TYPE = "type";
-    public static final String CALZADO = "CALZADO";
-    public static final String COLOR = "color";
-    public static final String IMAGE_URL = "image_url";
-    public static final String ID = "id";
-    public static final String SUB_TYPE = "sub_type";
-    public static final String VESTIDOS = "VESTIDOS";
+
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -58,10 +48,12 @@ public class OutfitRestController {
     @Autowired
     private CategoryService categoryService;
 
-    private CategoryRepository categoryRepository;
-  
+    @Autowired
+    private OutfitService outfitService;
     private List<Clothing> outfit = new ArrayList<>();
-    private boolean isDress = false;
+    private List<List<Clothing>> weeklyOutfits = new ArrayList<>();
+  
+
 
 
     @GetMapping
@@ -165,7 +157,7 @@ public class OutfitRestController {
         try {
 
             List<Map<String,Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
-            getTypeList(temporal);
+            outfit = outfitService.getTypeList(temporal, "random");
             return new GlobalResponseHandler().handleResponse(
                     "Outfit generado con éxito",
                     outfit,
@@ -182,115 +174,33 @@ public class OutfitRestController {
         }
     }
 
-    private void getTypeList(List<Map<String, Object>> temporal) {
 
-        outfit = new ArrayList<>();
-        // Crear un mapa para agrupar las listas por tipo
-        Map<String, List<Map<String, String>>> categories = new HashMap<>();
-        categories.put(SUPERIOR, new ArrayList<>());
-        categories.put(INFERIOR, new ArrayList<>());
-        categories.put(ABRIGO, new ArrayList<>());
-        categories.put(CALZADO, new ArrayList<>());
-        categories.put(CUERPO_COMPLETO, new ArrayList<>());
-        categories.put(ACCESORIO, new ArrayList<>());
+    @Transactional
+    @GetMapping("/{userId}/weekly/{temp}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getWeeklyOutfits(@PathVariable Long userId,
+                                              @PathVariable float temp,
+                                           HttpServletRequest request) {
+        try {
 
-        // Recorrer la lista del Store procedure para desglosarlo en las categorías
-        for (Map<String, Object> row : temporal) {
-            String type = (String) row.get(TYPE);
-            if (categories.containsKey(type)) {
-                categories.get(type).add(addRow(row));
-            }
-        }
-
-        Random random = new Random();
-        if (!categories.get(SUPERIOR).isEmpty() && !categories.get(CUERPO_COMPLETO).isEmpty()) {
-            boolean randomBool = random.nextBoolean();
-
-            // Si es 'true', se selecciona de 'SUPERIOR'
-            if (randomBool) {
-                // Selección de SUPERIOR, INFERIOR, CALZADOS, ABRIGOS
-                selectRandomFromList(categories.get(SUPERIOR));
-                Object subTypeObject = categories.get(SUB_TYPE);
-
-                selectRandomFromList(categories.get(INFERIOR));
-                selectRandomFromList(categories.get(CALZADO));
-                selectRandomFromList(categories.get(ABRIGO));
-            } else {
-                // Si es 'false', se selecciona de 'CUERPO_COMPLETO'
-                selectRandomFromList(categories.get(CUERPO_COMPLETO));
-                if(!isDress) {
-                    selectRandomFromList(categories.get(SUPERIOR));
-                }
-                selectRandomFromList(categories.get(CALZADO));
-                selectRandomFromList(categories.get(ACCESORIO));
-            }
-        } else {
-            // Si 'SUPERIOR' no tiene elementos selecciona de cuerpo completo
-            if(!categories.get(SUPERIOR).isEmpty()){
-                selectRandomFromList(categories.get(SUPERIOR));
-
-                // Lista de categorías a verificar
-                List<String> categoriesToCheck = List.of(
-                        INFERIOR, CALZADO, ABRIGO, ACCESORIO
-                );
-                // Iterar sobre las categorías adicionales
-                for (String category : categoriesToCheck) {
-                    // Verificar si la categoría no está vacía
-                    if (!categories.get(category).isEmpty()) {
-                        selectRandomFromList(categories.get(category));
-                    }
-                }
-
-
-            }else if (!categories.get(CUERPO_COMPLETO).isEmpty()){
-                selectRandomFromList(categories.get(CUERPO_COMPLETO));
-                if(!isDress) {
-                    selectRandomFromList(categories.get(SUPERIOR));
-                }
-                selectRandomFromList(categories.get(CALZADO));
-                selectRandomFromList(categories.get(ACCESORIO));
-            }
+            List<Map<String,Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
+            weeklyOutfits = outfitService.getWeeklyOutfits(temporal, "weekly", 24);
+            return new GlobalResponseHandler().handleResponse(
+                    "Outfit semanal generado con éxito",
+                    weeklyOutfits,
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse(
+                    "Error al tratar de generar el outfit semanal",
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
         }
     }
 
-
-    //Método para seleccionar aleatoriamente un elemento de la lista
-    private void selectRandomFromList(List<Map<String, String>> list) {
-        Map<String, String> selectedItem = new HashMap<>();
-        int index = 0;
-        if (!list.isEmpty()) {
-            if (list.size() > 1) {
-                Random random = new Random();
-                index = random.nextInt(list.size());
-                selectedItem = list.get(index);
-            }else{
-                selectedItem = list.getFirst();
-
-            }
-            isDress = selectedItem.get(SUB_TYPE).contains(VESTIDOS);
-            addClothing(selectedItem);
-
-
-        }
-
-    }
-
-    private void addClothing(Map<String, String> selectedItem) {
-
-        Clothing item = new Clothing();
-        item.setId(Long.valueOf(selectedItem.get(ID)));
-        item.setImageUrl(selectedItem.get(IMAGE_URL));
-        outfit.add(item);
-    }
-
-    private Map<String, String> addRow(Map<String, Object> row) {
-        Map<String,String> result = new HashMap<>();
-        result.put(ID, String.valueOf(row.get(ID)));
-        result.put(SUB_TYPE, (String) row.get(SUB_TYPE));
-        result.put(COLOR,(String) row.get(COLOR));
-        result.put(IMAGE_URL, (String) row.get(IMAGE_URL));
-        return result;
-    }
 
     @PutMapping("/{outfitId}")
     @PreAuthorize("isAuthenticated()")
