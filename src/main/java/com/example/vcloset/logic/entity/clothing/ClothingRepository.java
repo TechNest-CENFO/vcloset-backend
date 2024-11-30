@@ -20,4 +20,6 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
             @Param("typeParam") String type);
 
     Page<Clothing> findByIsClothingItemActiveTrueAndUserId(Long userId, Pageable pageable);
+
+    Page<Clothing> findByIsClothingItemActiveTrueAndIsPublicTrue(Pageable pageable);
 }

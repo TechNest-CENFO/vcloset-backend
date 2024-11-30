@@ -210,4 +210,23 @@ public class ClothingRestController {
         }
     }
 
+    @GetMapping("/public")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getAllPublicClothing(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Clothing> clothingPage = clothingRepository.findByIsClothingItemActiveTrueAndIsPublicTrue(pageable);
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(clothingPage.getTotalPages());
+        meta.setTotalElements(clothingPage.getTotalElements());
+        meta.setPageNumber(clothingPage.getNumber() + 1);
+        meta.setPageSize(clothingPage.getSize());
+        return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
+                clothingPage.getContent(), HttpStatus.OK, meta);
+
+    }
+
 }
