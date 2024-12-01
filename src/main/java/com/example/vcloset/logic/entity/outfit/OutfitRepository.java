@@ -1,5 +1,6 @@
 package com.example.vcloset.logic.entity.outfit;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,9 @@ public interface OutfitRepository extends JpaRepository<Outfit, Long> {
     @Query(value = "CALL GetClothingTypeSP(:userIdParam)", nativeQuery = true)
     List<Map<String, Object>> GetClothingTypeSP(
             @Param("userIdParam") Long userId);
+
+    // Contar todos los outfits
+    @Transactional
+    @Query("SELECT COUNT(o) FROM Outfit o")
+    int countAllOutfits();
 }
