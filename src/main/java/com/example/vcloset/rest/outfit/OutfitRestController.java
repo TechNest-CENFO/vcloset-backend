@@ -150,14 +150,15 @@ public class OutfitRestController {
     }
 
     @Transactional
-    @GetMapping("/{userId}/random")
+    @GetMapping("/{userId}/{temp}/random")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAllOutfits(@PathVariable Long userId,
+                                           @PathVariable float temp,
                                            HttpServletRequest request) {
         try {
 
             List<Map<String,Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
-            outfit = outfitService.getTypeList(temporal, "random");
+            outfit = outfitService.getTypeList(temporal, "random", temp);
             return new GlobalResponseHandler().handleResponse(
                     "Outfit generado con éxito",
                     outfit,
