@@ -1,5 +1,6 @@
 package com.example.vcloset.logic.entity.clothing;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,9 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
 
     Page<Clothing> findByIsClothingItemActiveTrueAndUserId(Long userId, Pageable pageable);
 
+    Page<Clothing> findByIsClothingItemActiveTrueAndIsPublicTrue(Pageable pageable);
+
+    @Transactional
+    @Query("SELECT COUNT(c) FROM Clothing c")
+    int countAllClothing();
 }
