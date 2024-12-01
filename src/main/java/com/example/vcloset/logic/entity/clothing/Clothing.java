@@ -48,7 +48,6 @@ public class Clothing {
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

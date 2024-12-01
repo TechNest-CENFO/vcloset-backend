@@ -33,9 +33,13 @@ public class Loan {
     @Column(columnDefinition = "TINYINT(1) NOT NULL")
     private Boolean isItemBorrowed;
 
+    @Column(columnDefinition = "TINYINT(1) NOT NULL")
+    private Boolean isItemRequested;
+
 
     public Loan() {
         this.isItemBorrowed = false;
+        this.isItemRequested = false;
     }
 
     public Long getId() {
@@ -92,5 +96,13 @@ public class Loan {
 
     public void setItemBorrowed(Boolean itemBorrowed) {
         isItemBorrowed = itemBorrowed;
+    }
+
+    public Boolean getItemRequested() {
+        return isItemRequested;
+    }
+
+    public void setItemRequested(Boolean itemRequested) {
+        isItemRequested = itemRequested;
     }
 }

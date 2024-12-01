@@ -22,6 +22,4 @@ public interface ClothingRepository extends JpaRepository<Clothing, Long> {
 
     Page<Clothing> findByIsClothingItemActiveTrueAndUserId(Long userId, Pageable pageable);
 
-    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId")
-    Page<Clothing> findByIsClothingItemActiveTrueAndIsPublicTrue(Long userId, Pageable pageable);
 }
