@@ -35,7 +35,7 @@ public class OutfitService {
     public static List<Map<String, String>> temporalAccesory = new ArrayList<>();
     public static List<List<Clothing>> weeklyOutfit = new ArrayList<>();
 
-    public List<Clothing> getTypeList(List<Map<String, Object>> temporal, String _selectionType) {
+    public List<Clothing> getTypeList(List<Map<String, Object>> temporal, String _selectionType, float _temp) {
         Random random = dataSettings(temporal, _selectionType);
         getOutfitRandom(random);
         return outfit;
