@@ -308,8 +308,6 @@ public class OutfitRestController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
 
-        System.out.println(outfit);
-
         Set<Clothing> clothingToAdd = new HashSet<>();
         for (Clothing clothing : outfit.getClothing()) {
             try {
@@ -398,6 +396,34 @@ public class OutfitRestController {
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
+    @Transactional
+    @GetMapping("/{userId}/trending")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getTrendingOutfit(@PathVariable Long userId, HttpServletRequest request) {
+        try {
+            // Obtiene prendas desde el Store Procedure
+            List<Map<String, Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
+
+            // Genera un outfit basado en tendencias
+            List<Clothing> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
+
+            return new GlobalResponseHandler().handleResponse(
+                    "Outfit generado por tendencias con éxito",
+                    trendingOutfit,
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse(
+                    "Error al tratar de generar el outfit por tendencias",
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+    }
+
 
 
 }
