@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.category.CategoryEnum;
 import com.example.vcloset.logic.entity.category.CategoryRepository;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
+import com.example.vcloset.logic.entity.clothing.clothingType.ClothingTypeSeeder;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.http.Meta;
 import com.example.vcloset.logic.entity.outfit.Outfit;
@@ -27,11 +28,23 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/outfit")
 @RestController
 public class OutfitRestController {
-
+    public static final String SUPERIOR = "SUPERIOR";
+    public static final String INFERIOR = "INFERIOR";
+    public static final String ABRIGO = "ABRIGO";
+    public static final String CUERPO_COMPLETO = "CUERPO_COMPLETO";
+    public static final String ACCESORIO = "ACCESORIO";
+    public static final String TYPE = "type";
+    public static final String CALZADO = "CALZADO";
+    public static final String COLOR = "color";
+    public static final String IMAGE_URL = "image_url";
+    public static final String ID = "id";
+    public static final String SUB_TYPE = "sub_type";
+    public static final String VESTIDOS = "VESTIDOS";
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -52,8 +65,11 @@ public class OutfitRestController {
     private OutfitService outfitService;
     private List<Clothing> outfit = new ArrayList<>();
     private List<List<Clothing>> weeklyOutfits = new ArrayList<>();
-  
 
+
+    private boolean isDress = false;
+    @Autowired
+    private ClothingTypeSeeder clothingTypeSeeder;
 
 
     @GetMapping
@@ -293,8 +309,6 @@ public class OutfitRestController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
 
-        System.out.println(outfit);
-
         Set<Clothing> clothingToAdd = new HashSet<>();
         for (Clothing clothing : outfit.getClothing()) {
             try {
@@ -383,4 +397,34 @@ public class OutfitRestController {
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
+    @Transactional
+    @GetMapping("/{userId}/trending")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getTrendingOutfit(@PathVariable Long userId, HttpServletRequest request) {
+        try {
+            // Obtiene prendas desde el Store Procedure
+            List<Map<String, Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
+
+            // Genera un outfit basado en tendencias
+            List<Clothing> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
+
+            return new GlobalResponseHandler().handleResponse(
+                    "Outfit generado por tendencias con éxito",
+                    trendingOutfit,
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse(
+                    "Error al tratar de generar el outfit por tendencias",
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+    }
+
+
+
 }

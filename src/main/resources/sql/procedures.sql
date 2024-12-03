@@ -26,6 +26,19 @@ WHERE c.user_id = userIdParam order by ct.type;
 END //
 DELIMITER ;
 
+CREATE PROCEDURE GetClothingDataSP(
+    IN userIdParam BIGINT,
+    IN clothingTypeIdParam BIGINT
+)
+BEGIN
+SELECT c.*, ct.type, ct.sub_type
+FROM vcloset.clothing c
+         JOIN vcloset.clothing_type ct ON c.clothing_type_id = ct.id
+WHERE c.user_id = userIdParam
+  AND (ct.id = clothingTypeIdParam OR clothingTypeIdParam IS NULL)
+ORDER BY ct.type;
+END //
+DELIMITER ;
 
 DELIMITER //
 
