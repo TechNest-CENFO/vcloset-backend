@@ -30,17 +30,16 @@ public class Loan {
     @Column(columnDefinition = "TINYINT(1) NOT NULL DEFAULT 5")
     private Integer loanerScore; //el puntaje que se va a otorgar al que pide la prenda
 
-    @Column(columnDefinition = "TINYINT(1) NOT NULL")
-    private Boolean isItemBorrowed;
 
-    @Column(columnDefinition = "TINYINT(1) NOT NULL")
+    @Column(columnDefinition = "TINYINT(1)")
+    private boolean isItemBorrowed;
+
+
+    @Column(columnDefinition = "TINYINT(1)")
     private Boolean isItemRequested;
 
 
-    public Loan() {
-        this.isItemBorrowed = false;
-        this.isItemRequested = false;
-    }
+    public Loan() {}
 
     public Long getId() {
         return id;

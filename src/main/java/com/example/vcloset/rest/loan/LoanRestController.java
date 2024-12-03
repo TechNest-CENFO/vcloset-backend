@@ -110,22 +110,61 @@ public class LoanRestController {
     }
 
 
-    @GetMapping("{userId}/my-requests")
+    @GetMapping("/related-loans")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getMyRequests(
+    public ResponseEntity<?> getRelatedLoans(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @PathVariable Long userId,
             HttpServletRequest request) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Clothing> clothingPage = loanRepository.findMyRequests(userId, pageable);
+        Page<Loan> clothingPage = loanRepository.findMyLoans(pageable);
         Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
         meta.setTotalPages(clothingPage.getTotalPages());
         meta.setTotalElements(clothingPage.getTotalElements());
         meta.setPageNumber(clothingPage.getNumber() + 1);
         meta.setPageSize(clothingPage.getSize());
         return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
+                clothingPage.getContent(), HttpStatus.OK, meta);
+    }
+
+
+    @GetMapping("requests-sent")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getRequestsSent(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam Long loanerId,
+            HttpServletRequest request) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Loan> clothingPage = loanRepository.findMySentRequests(loanerId, pageable);
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(clothingPage.getTotalPages());
+        meta.setTotalElements(clothingPage.getTotalElements());
+        meta.setPageNumber(clothingPage.getNumber() + 1);
+        meta.setPageSize(clothingPage.getSize());
+        return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
+                clothingPage.getContent(), HttpStatus.OK, meta);
+    }
+
+    @GetMapping("requests-received")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getRequestsReceived(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam Long lenderId,
+            HttpServletRequest request) {
+
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Loan> clothingPage = loanRepository.findMyReceivedRequests(lenderId, pageable);
+        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
+        meta.setTotalPages(clothingPage.getTotalPages());
+        meta.setTotalElements(clothingPage.getTotalElements());
+        meta.setPageNumber(clothingPage.getNumber() + 1);
+        meta.setPageSize(clothingPage.getSize());
+        return new GlobalResponseHandler().handleResponse("Loan Items retrieved successfully",
                 clothingPage.getContent(), HttpStatus.OK, meta);
     }
 
@@ -165,5 +204,16 @@ public class LoanRestController {
         meta.setPageSize(clothingPage.getSize());
         return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
                 clothingPage.getContent(), HttpStatus.OK, meta);
+    }
+
+    @PatchMapping("/approval")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<Loan> setIsItemBorrowed(@RequestBody Loan loan) {
+
+        return loanRepository.findById(loan.getId())
+                .map(existingLoan -> {
+                    existingLoan.setItemBorrowed(loan.getItemBorrowed());
+                    return loanRepository.save(existingLoan);
+                });
     }
 }

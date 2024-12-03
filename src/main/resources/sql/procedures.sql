@@ -49,7 +49,7 @@ BEGIN
             END AS month,  -- Nombre del mes en español
         COUNT(*) AS users_created
     FROM
-        USER
+        user
     WHERE
         created_at >= CURDATE() - INTERVAL 12 MONTH  -- Filtrar usuarios de los últimos 12 meses
     GROUP BY
