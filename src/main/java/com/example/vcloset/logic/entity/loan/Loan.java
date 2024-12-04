@@ -37,12 +37,14 @@ public class Loan {
     private boolean isItemBorrowed;
 
     @Column(columnDefinition = "TINYINT(1)")
-    private Boolean isItemRequested;
+    private boolean isItemRequested;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String requestStatus;
 
     public Loan() {}
 
@@ -116,5 +118,13 @@ public class Loan {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
     }
 }

@@ -77,9 +77,10 @@ public class LoanRestController {
         newLoan.setLenderUser(lenderUser.get());
         newLoan.setLoanerUser(loanerUser.get());
         newLoan.setClothing(clothing.get());
-        newLoan.setItemRequested(true);
+        newLoan.setItemRequested(loanRequest.getItemRequested());
         newLoan.setLenderScore(loanRequest.getLenderScore());
         newLoan.setLoanerScore(loanRequest.getLoanerScore());
+        newLoan.setRequestStatus(loanRequest.getRequestStatus());
 
         Loan savedLoan = loanRepository.save(newLoan);
 
@@ -213,6 +214,7 @@ public class LoanRestController {
         return loanRepository.findById(loan.getId())
                 .map(existingLoan -> {
                     existingLoan.setItemBorrowed(loan.getItemBorrowed());
+                    existingLoan.setRequestStatus(loan.getRequestStatus());
                     return loanRepository.save(existingLoan);
                 });
     }
