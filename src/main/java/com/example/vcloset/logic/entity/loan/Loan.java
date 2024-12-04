@@ -4,6 +4,9 @@ import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Entity
 public class Loan {
@@ -30,13 +33,15 @@ public class Loan {
     @Column(columnDefinition = "TINYINT(1) NOT NULL DEFAULT 5")
     private Integer loanerScore; //el puntaje que se va a otorgar al que pide la prenda
 
-
     @Column(columnDefinition = "TINYINT(1)")
     private boolean isItemBorrowed;
 
-
     @Column(columnDefinition = "TINYINT(1)")
     private Boolean isItemRequested;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
 
 
     public Loan() {}
@@ -103,5 +108,13 @@ public class Loan {
 
     public void setItemRequested(Boolean itemRequested) {
         isItemRequested = itemRequested;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

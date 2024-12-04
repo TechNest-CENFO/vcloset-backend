@@ -68,7 +68,6 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Clothing> clothing = new LinkedHashSet<>();
 

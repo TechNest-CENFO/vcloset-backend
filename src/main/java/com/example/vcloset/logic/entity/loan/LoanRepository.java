@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
-    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId")
+    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId order by c.id")
     Page<Clothing> findByPublicClothingItem(Long userId, Pageable pageable);
 
     @Query("SELECT l FROM Loan l WHERE l.isItemRequested = true and l.lenderUser.id = :userId")
