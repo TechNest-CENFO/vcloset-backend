@@ -396,7 +396,7 @@ public class OutfitRestController {
             List<Map<String, Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
 
             // Genera un outfit basado en tendencias
-            List<Clothing> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
+            List<Outfit> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
 
             return new GlobalResponseHandler().handleResponse(
                     "Outfit generado por tendencias con éxito",
