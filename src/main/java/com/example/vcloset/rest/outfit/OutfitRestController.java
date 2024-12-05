@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.category.CategoryEnum;
 import com.example.vcloset.logic.entity.category.CategoryRepository;
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
+import com.example.vcloset.logic.entity.clothing.clothingType.ClothingTypeSeeder;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.http.Meta;
 import com.example.vcloset.logic.entity.outfit.Outfit;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/outfit")
 @RestController
@@ -54,6 +56,9 @@ public class OutfitRestController {
     private List<Outfit> weeklyOutfits = new ArrayList<>();
   
 
+    private boolean isDress = false;
+    @Autowired
+    private ClothingTypeSeeder clothingTypeSeeder;
 
 
     @GetMapping
@@ -180,7 +185,7 @@ public class OutfitRestController {
     @GetMapping("/{userId}/weekly/{temp}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getWeeklyOutfits(@PathVariable Long userId,
-                                              @PathVariable String temp,
+                                              @PathVariable float temp,
                                            HttpServletRequest request) {
         try {
 
@@ -293,8 +298,6 @@ public class OutfitRestController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<?> addManualOutfit(@PathVariable Long userId, @RequestBody Outfit outfit, HttpServletRequest request) {
 
-        System.out.println(outfit);
-
         Set<Clothing> clothingToAdd = new HashSet<>();
         for (Clothing clothing : outfit.getClothing()) {
             try {
@@ -383,4 +386,34 @@ public class OutfitRestController {
                     HttpStatus.NOT_FOUND, request);
         }
     }
+
+    @Transactional
+    @GetMapping("/{userId}/trending")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getTrendingOutfit(@PathVariable Long userId, HttpServletRequest request) {
+        try {
+            // Obtiene prendas desde el Store Procedure
+            List<Map<String, Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
+
+            // Genera un outfit basado en tendencias
+            List<Clothing> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
+
+            return new GlobalResponseHandler().handleResponse(
+                    "Outfit generado por tendencias con éxito",
+                    trendingOutfit,
+                    HttpStatus.OK,
+                    request
+            );
+        } catch (Exception e) {
+            return new GlobalResponseHandler().handleResponse(
+                    "Error al tratar de generar el outfit por tendencias",
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+    }
+
+
+
 }
