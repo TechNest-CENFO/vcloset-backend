@@ -32,7 +32,7 @@ public class RecommendationsRestController {
 
         return  new GlobalResponseHandler().handleResponse(
                 "Clima generado con éxito",
-                //weatherService.getWeather(city),
+                weatherData,
                 HttpStatus.OK,
                 request);
     }

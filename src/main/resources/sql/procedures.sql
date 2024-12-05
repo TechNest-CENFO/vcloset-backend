@@ -17,7 +17,7 @@ CREATE PROCEDURE GetClothingTypeSP(
     IN userIdParam BIGINT
 )
 BEGIN
-SELECT  c.*, ct.type, ct.sub_type, c2.name nameCategory
+SELECT  c.*, ct.type, ct.sub_type, c2.name nameCategory, c2.id idCategory
 FROM clothing c
          JOIN clothing_type ct ON c.clothing_type_id = ct.id
          JOIN category_clothing cat ON c.id = cat.clothing_id
