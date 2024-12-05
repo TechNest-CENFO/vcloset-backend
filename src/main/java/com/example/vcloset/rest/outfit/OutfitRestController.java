@@ -50,8 +50,8 @@ public class OutfitRestController {
 
     @Autowired
     private OutfitService outfitService;
-    private List<Clothing> outfit = new ArrayList<>();
-    private List<List<Clothing>> weeklyOutfits = new ArrayList<>();
+    private List<Outfit> outfit = new ArrayList<>();
+    private List<Outfit> weeklyOutfits = new ArrayList<>();
   
 
 
@@ -180,7 +180,7 @@ public class OutfitRestController {
     @GetMapping("/{userId}/weekly/{temp}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getWeeklyOutfits(@PathVariable Long userId,
-                                              @PathVariable float temp,
+                                              @PathVariable String temp,
                                            HttpServletRequest request) {
         try {
 
@@ -320,7 +320,7 @@ public class OutfitRestController {
             }
 
             outfitToAdd.setName(outfit.getName());
-            outfitToAdd.setImageUrl("test");
+            outfitToAdd.setImageUrl(outfit.getImageUrl() != null && !outfit.getImageUrl().isEmpty() ? outfit.getImageUrl() : "test");
             outfitToAdd.setFavorite(false);
             outfitToAdd.setIsPublic(true);
 
