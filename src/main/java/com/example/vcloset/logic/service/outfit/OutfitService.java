@@ -1,6 +1,9 @@
 package com.example.vcloset.logic.service.outfit;
 
+import com.example.vcloset.logic.entity.category.Category;
+import com.example.vcloset.logic.entity.category.CategoryEnum;
 import com.example.vcloset.logic.entity.clothing.Clothing;
+import com.example.vcloset.logic.entity.outfit.Outfit;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,7 +24,8 @@ public class OutfitService {
     public static final String VESTIDOS = "VESTIDOS";
     public static final String NAME_CATEGORY = "nameCategory";
     public static final String SEASON = "season";
-    private List<Clothing> outfit = new ArrayList<>();
+    public static final String ID_CATEGORY = "idCategory";
+    private List<Outfit> outfit = new ArrayList<>();
     private boolean isDress = false;
     private String selectionType;
     private double temp;
@@ -33,15 +37,16 @@ public class OutfitService {
     public static List<Map<String, String>> temporalFootwear = new ArrayList<>();
     public static List<Map<String, String>> temporalFullBody = new ArrayList<>();
     public static List<Map<String, String>> temporalAccesory = new ArrayList<>();
-    public static List<List<Clothing>> weeklyOutfit = new ArrayList<>();
+    public static List<Outfit> weeklyOutfit = new ArrayList<>();
 
-    public List<Clothing> getTypeList(List<Map<String, Object>> temporal, String _selectionType, float _temp) {
+
+    public List<Outfit> getTypeList(List<Map<String, Object>> temporal, String _selectionType, float _temp) {
         Random random = dataSettings(temporal, _selectionType);
         getOutfitRandom(random);
         return outfit;
     }
 
-    public List<List<Clothing>> getWeeklyOutfits(List<Map<String, Object>> temporal, String _selectionType, float _temp){
+    public List<Outfit> getWeeklyOutfits(List<Map<String, Object>> temporal, String _selectionType, float _temp){
         Random random = dataSettings(temporal, _selectionType);
         temp = _temp;
         for (int i = 0; i <= 6 ; i++) {
@@ -151,7 +156,7 @@ public class OutfitService {
            return;
         }
 
-        temp= 23;
+
         Map<String, String> selectedItem = new HashMap<>();
         List<Map<String, String>> filteredList = new ArrayList<>();
         List<Map<String, String>> formalList = new ArrayList<>();
@@ -228,12 +233,27 @@ public class OutfitService {
 
     private void addClothing(Map<String, String> selectedItem, boolean flag) {
 
-        Clothing item = new Clothing();
-        item.setId(Long.valueOf(selectedItem.get(ID)));
+        Outfit item = new Outfit();
+        Category cat = new Category();
+        cat.setId(Long.valueOf(selectedItem.get(ID_CATEGORY)));
+        cat.setName(CategoryEnum.valueOf(selectedItem.get(NAME_CATEGORY)));
+        item.setId(Integer.valueOf(selectedItem.get(ID)));
         item.setImageUrl(selectedItem.get(IMAGE_URL));
+        item.setCategory(cat);
         outfit.add(item);
         if(!selectionType.equals("random") && flag){
-            weeklyOutfit.add(outfit);
+
+
+            Outfit o = new Outfit();
+            for (int i = 0; i < outfit.size(); i++){
+                Clothing c = new Clothing();
+                c.setId(Long.valueOf(outfit.get(i).getId()));
+                c.setImageUrl(outfit.get(i).getImageUrl());
+                o.setCategory(outfit.get(i).getCategory());
+                o.getClothing().add(c);
+            }
+            weeklyOutfit.add(o);
+
             outfit = new ArrayList<>();
         }
 
@@ -246,6 +266,7 @@ public class OutfitService {
         result.put(COLOR,(String) row.get(COLOR));
         result.put(IMAGE_URL, (String) row.get(IMAGE_URL));
         result.put(TYPE,type);
+        result.put(ID_CATEGORY, String.valueOf(row.get(ID_CATEGORY)));
         result.put(NAME_CATEGORY,(String) row.get(NAME_CATEGORY));
         result.put(SEASON,(String) row.get(SEASON));
         return result;

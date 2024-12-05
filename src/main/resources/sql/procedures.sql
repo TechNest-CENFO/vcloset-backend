@@ -17,7 +17,7 @@ CREATE PROCEDURE GetClothingTypeSP(
     IN userIdParam BIGINT
 )
 BEGIN
-SELECT  c.*, ct.type, ct.sub_type, c2.name nameCategory
+SELECT  c.*, ct.type, ct.sub_type, c2.name nameCategory, c2.id idCategory
 FROM clothing c
          JOIN clothing_type ct ON c.clothing_type_id = ct.id
          JOIN category_clothing cat ON c.id = cat.clothing_id
@@ -62,7 +62,7 @@ BEGIN
             END AS month,  -- Nombre del mes en español
         COUNT(*) AS users_created
     FROM
-        USER
+        user
     WHERE
         created_at >= CURDATE() - INTERVAL 12 MONTH  -- Filtrar usuarios de los últimos 12 meses
     GROUP BY
