@@ -2,7 +2,6 @@ package com.example.vcloset.rest.loan;
 
 import com.example.vcloset.logic.entity.clothing.Clothing;
 import com.example.vcloset.logic.entity.clothing.ClothingRepository;
-import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
 import com.example.vcloset.logic.entity.clothing.clothingType.ClothingTypeRepository;
 import com.example.vcloset.logic.entity.http.GlobalResponseHandler;
 import com.example.vcloset.logic.entity.http.Meta;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +45,7 @@ public class LoanRestController {
 
 
 
-    @PostMapping("/request")
+    @PostMapping(value ="/request", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addLoan(
                 @RequestBody Loan loanRequest, HttpServletRequest request) {
 
@@ -111,25 +111,6 @@ public class LoanRestController {
     }
 
 
-    @GetMapping("/related-loans")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getRelatedLoans(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
-
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Loan> clothingPage = loanRepository.findMyLoans(pageable);
-        Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
-        meta.setTotalPages(clothingPage.getTotalPages());
-        meta.setTotalElements(clothingPage.getTotalElements());
-        meta.setPageNumber(clothingPage.getNumber() + 1);
-        meta.setPageSize(clothingPage.getSize());
-        return new GlobalResponseHandler().handleResponse("Clothing Items retrieved successfully",
-                clothingPage.getContent(), HttpStatus.OK, meta);
-    }
-
-
     @GetMapping("requests-sent")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getRequestsSent(
@@ -169,16 +150,16 @@ public class LoanRestController {
                 clothingPage.getContent(), HttpStatus.OK, meta);
     }
 
-    @GetMapping("{userId}/my-loans")
+    @GetMapping("my-loans")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getMyLoans(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @PathVariable Long userId,
+            @RequestParam Long loanerId,
             HttpServletRequest request) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Clothing> clothingPage = loanRepository.findByPublicClothingItem(userId, pageable);
+        Page<Loan> clothingPage = loanRepository.findMyLoans(loanerId, pageable);
         Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
         meta.setTotalPages(clothingPage.getTotalPages());
         meta.setTotalElements(clothingPage.getTotalElements());
@@ -188,16 +169,16 @@ public class LoanRestController {
                 clothingPage.getContent(), HttpStatus.OK, meta);
     }
 
-    @GetMapping("{userId}/my-lends")
+    @GetMapping("my-lends")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getMyLends(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @PathVariable Long userId,
+            @RequestParam Long lenderId,
             HttpServletRequest request) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Clothing> clothingPage = loanRepository.findByPublicClothingItem(userId, pageable);
+        Page<Loan> clothingPage = loanRepository.findMyLends(lenderId, pageable);
         Meta meta = new Meta(request.getMethod(), request.getRequestURL().toString());
         meta.setTotalPages(clothingPage.getTotalPages());
         meta.setTotalElements(clothingPage.getTotalElements());

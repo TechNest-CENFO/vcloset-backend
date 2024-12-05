@@ -5,13 +5,15 @@ import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
 import com.example.vcloset.logic.entity.loan.Loan;
 import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Clothing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

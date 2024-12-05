@@ -32,12 +32,24 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             "and l.loanerUser.id = :userId")
     Page<Loan> findMySentRequests(Long userId, Pageable pageable);
 
-    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId")
-    Page<Clothing> findMyLends(Long userId, Pageable pageable);
+    @Query("SELECT l " +
+            "FROM Clothing c " +
+            "JOIN Loan l " +
+            "on c.id = l.clothing.id " +
+            "WHERE c.isClothingItemActive = true " +
+            "and c.isPublic = true " +
+            "and l.lenderUser.id = :userId")
+    Page<Loan> findMyLends(Long userId, Pageable pageable);
 
-    @Query("SELECT c FROM Clothing c WHERE c.isClothingItemActive = true and c.isPublic = true and c.user.id != :userId")
-    Page<Clothing> findMyLoans(Long userId, Pageable pageable);
+    @Query("SELECT l " +
+            "FROM Clothing c " +
+            "JOIN Loan l " +
+            "on c.id = l.clothing.id " +
+            "WHERE c.isClothingItemActive = true " +
+            "and c.isPublic = true " +
+            "and l.loanerUser.id = :userId")
+    Page<Loan> findMyLoans(Long userId, Pageable pageable);
 
-    @Query("SELECT c FROM Loan c")
-    Page<Loan> findMyLoans(Pageable pageable);
+//    @Query("SELECT c FROM Loan c")
+//    Page<Loan> findMyLoans(Pageable pageable);
 }
