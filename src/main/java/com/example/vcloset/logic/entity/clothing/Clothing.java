@@ -50,6 +50,7 @@ public class Clothing {
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
