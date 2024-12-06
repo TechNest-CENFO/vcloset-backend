@@ -33,18 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/outfit")
 @RestController
 public class OutfitRestController {
-    public static final String SUPERIOR = "SUPERIOR";
-    public static final String INFERIOR = "INFERIOR";
-    public static final String ABRIGO = "ABRIGO";
-    public static final String CUERPO_COMPLETO = "CUERPO_COMPLETO";
-    public static final String ACCESORIO = "ACCESORIO";
-    public static final String TYPE = "type";
-    public static final String CALZADO = "CALZADO";
-    public static final String COLOR = "color";
-    public static final String IMAGE_URL = "image_url";
-    public static final String ID = "id";
-    public static final String SUB_TYPE = "sub_type";
-    public static final String VESTIDOS = "VESTIDOS";
+
     @Autowired
     private OutfitRepository outfitRepository;
 
@@ -63,9 +52,9 @@ public class OutfitRestController {
 
     @Autowired
     private OutfitService outfitService;
-    private List<Clothing> outfit = new ArrayList<>();
-    private List<List<Clothing>> weeklyOutfits = new ArrayList<>();
-
+    private List<Outfit> outfit = new ArrayList<>();
+    private List<Outfit> weeklyOutfits = new ArrayList<>();
+  
 
     private boolean isDress = false;
     @Autowired
@@ -334,7 +323,7 @@ public class OutfitRestController {
             }
 
             outfitToAdd.setName(outfit.getName());
-            outfitToAdd.setImageUrl("test");
+            outfitToAdd.setImageUrl(outfit.getImageUrl() != null && !outfit.getImageUrl().isEmpty() ? outfit.getImageUrl() : "test");
             outfitToAdd.setFavorite(false);
             outfitToAdd.setIsPublic(true);
 
@@ -407,7 +396,7 @@ public class OutfitRestController {
             List<Map<String, Object>> temporal = outfitRepository.GetClothingTypeSP(userId);
 
             // Genera un outfit basado en tendencias
-            List<Clothing> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
+            List<Outfit> trendingOutfit = outfitService.generateTrendingOutfit(temporal);
 
             return new GlobalResponseHandler().handleResponse(
                     "Outfit generado por tendencias con éxito",

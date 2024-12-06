@@ -72,8 +72,13 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+=======
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+>>>>>>> origin/dev
     private Set<Clothing> clothing = new LinkedHashSet<>();
 
     public Set<com.example.vcloset.logic.entity.collection.Collection> getCollections() {
