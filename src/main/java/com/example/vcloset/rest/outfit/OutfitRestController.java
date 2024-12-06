@@ -101,7 +101,7 @@ public class OutfitRestController {
         }
     }
 
-    @GetMapping("/user/{userId}/favorite")
+    @GetMapping("/user/{userId}/favorites")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAllFavoritesByUser(@PathVariable Long userId,
                                                    @RequestParam(defaultValue = "1") int page,

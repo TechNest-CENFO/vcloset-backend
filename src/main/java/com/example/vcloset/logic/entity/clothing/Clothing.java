@@ -12,8 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
 public class Clothing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
