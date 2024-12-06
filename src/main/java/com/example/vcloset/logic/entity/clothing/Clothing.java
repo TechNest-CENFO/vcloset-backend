@@ -28,6 +28,7 @@ public class Clothing {
     @JoinColumn(name = "clothing_type_id")
     private ClothingType clothingType;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "clothing_outfit",
             joinColumns = @JoinColumn(name = "clothing_id"),
@@ -40,10 +41,13 @@ public class Clothing {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
     private Boolean isFavorite;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isClothingItemActive;
+
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -57,6 +61,7 @@ public class Clothing {
     public Clothing() {
         this.isFavorite = false;
         this.isPublic = true;
+        this.isClothingItemActive = true;
     }
 
     public Long getId() {
@@ -153,5 +158,13 @@ public class Clothing {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Boolean getClothingItemActive() {
+        return isClothingItemActive;
+    }
+
+    public void setClothingItemActive(Boolean clothingItemActive) {
+        isClothingItemActive = clothingItemActive;
     }
 }

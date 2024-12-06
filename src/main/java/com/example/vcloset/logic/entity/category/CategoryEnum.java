@@ -4,9 +4,10 @@ public enum CategoryEnum {
     CASUAL,
     FORMAL,
     SEMI_FORMAL,
-    SPORTSWEAR,
-    BEACHWEAR,
-    TRAVEL,
+    DEPORTIVO,
+    PLAYERO,
+    VIAJE,
     FESTIVAL,
-    STREETWEAR
+    CALLEJERO,
+    OTRO
 }

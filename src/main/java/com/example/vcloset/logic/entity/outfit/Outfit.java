@@ -37,11 +37,12 @@ public class Outfit {
 
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Outfit_collections",
             joinColumns = @JoinColumn(name = "outfit_"),
             inverseJoinColumns = @JoinColumn(name = "collections_id"))
@@ -50,10 +51,13 @@ public class Outfit {
     @Column(nullable = false)
     private String imageUrl;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isDeleted = false;
+
     public Outfit() {
     }
 
-    public Outfit(Integer id, String name, Set<Clothing> clothing, Boolean isPublic, Boolean isFavorite, Category category, User user, Set<Collection> collections, String imageUrl) {
+    public Outfit(Integer id, String name, Set<Clothing> clothing, Boolean isPublic, Boolean isFavorite, Category category, User user, Set<Collection> collections, String imageUrl, Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.clothing = clothing;
@@ -63,6 +67,7 @@ public class Outfit {
         this.user = user;
         this.collections = collections;
         this.imageUrl = imageUrl;
+        this.isDeleted = isDeleted;
     }
 
     public Integer getId() {
@@ -89,12 +94,12 @@ public class Outfit {
         this.clothing = clothing;
     }
 
-    public Boolean getPublic() {
+    public Boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(Boolean aPublic) {
-        isPublic = aPublic;
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public Boolean getFavorite() {
@@ -135,5 +140,13 @@ public class Outfit {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }
