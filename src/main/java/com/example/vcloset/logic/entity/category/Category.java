@@ -26,6 +26,7 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = "clothing_id"))
     private Set<Clothing> clothing = new LinkedHashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category", orphanRemoval = true)
     private Set<Outfit> outfits = new LinkedHashSet<>();
 
