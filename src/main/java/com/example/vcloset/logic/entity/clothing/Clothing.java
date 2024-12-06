@@ -5,6 +5,7 @@ import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
 import com.example.vcloset.logic.entity.loan.Loan;
 import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -50,6 +51,7 @@ public class Clothing {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     private String imageUrl;
