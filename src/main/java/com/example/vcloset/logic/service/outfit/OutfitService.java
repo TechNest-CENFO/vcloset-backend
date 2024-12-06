@@ -313,7 +313,7 @@ public class OutfitService {
         Category cat = new Category();
         clothing.setId(Integer.valueOf(selectedItem.get(ID)));
         clothing.setImageUrl(selectedItem.get(IMAGE_URL));
-        cat.setId(Long.valueOf(selectedItem.get(ID)));
+        cat.setId(Long.valueOf(selectedItem.get(ID_CATEGORY)));
         cat.setName(CategoryEnum.valueOf(selectedItem.get(NAME_CATEGORY)));
         clothing.setCategory(cat);
 
