@@ -6,6 +6,7 @@ import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.recommendation.Recommendation;
 import com.example.vcloset.logic.entity.rol.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -56,6 +57,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "lenderUser", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<com.example.vcloset.logic.entity.collection.Collection> collections = new LinkedHashSet<>();
 
 
     @Override
@@ -68,8 +72,22 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+<<<<<<< HEAD
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+=======
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
+>>>>>>> origin/dev
     private Set<Clothing> clothing = new LinkedHashSet<>();
+
+    public Set<com.example.vcloset.logic.entity.collection.Collection> getCollections() {
+        return collections;
+    }
+
+    public void setCollections(Set<com.example.vcloset.logic.entity.collection.Collection> collections) {
+        this.collections = collections;
+    }
 
 
     // Constructors

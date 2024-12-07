@@ -5,7 +5,7 @@ import com.example.vcloset.logic.entity.clothing.clothingType.ClothingType;
 import com.example.vcloset.logic.entity.loan.Loan;
 import com.example.vcloset.logic.entity.outfit.Outfit;
 import com.example.vcloset.logic.entity.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -44,10 +44,11 @@ public class Clothing {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isClothingItemActive;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "clothing", orphanRemoval = true)
     private Set<Loan> loans = new LinkedHashSet<>();
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
